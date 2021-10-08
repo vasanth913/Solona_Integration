@@ -13,7 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import CheckProgram from '../Components/checkProgram';
 
 
-const EstablishPayer = ({connectionUrl}) => {
+const EstablishPayer = ({ connectionUrl }) => {
 
   const [payerUrl, setPayerUrl] = useState <any> (false);
 
@@ -171,7 +171,7 @@ let payer: Keypair;
         return yaml.parse(configYml);
       }
         
-  },[]);
+  },[connectionUrl]);
 
     return (
         <> 

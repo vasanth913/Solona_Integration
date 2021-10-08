@@ -11,11 +11,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import EstablishPayer from './establishPayer';
 import { useHistory } from "react-router-dom";
 
-const EstablishConnection = () => {
+const EstablishConnection = ({userNameData, mintData}) => {
+
+  
 
   const [connectionUrl, setConnection] = useState <any> (false);
 
-  const userName = useSelector((state: RootState) => state.loginReducer.userNameResponse);
+  
 
   useEffect(() => {
 
@@ -75,18 +77,18 @@ const EstablishConnection = () => {
         'cli',
         'config.yml',
       );
-      const configYml = await fs.readFileSync(CONFIG_FILE_PATH, {encoding: 'utf8'});
-      // const configYml = `---
-      // json_rpc_url: "https://api.devnet.solana.com"
-      // websocket_url: ""
-      // keypair_path: C:/Users/vasan/.config/solana/id.json
-      // address_labels:
-      //   "11111111111111111111111111111111": System Program
-      // commitment: confirmed`
+      //const configYml = await fs.readFileSync(CONFIG_FILE_PATH, {encoding: 'utf8'});
+      const configYml = `---
+      json_rpc_url: "https://api.devnet.solana.com"
+      websocket_url: ""
+      keypair_path: C:/Users/vasan/.config/solana/id.json
+      address_labels:
+        "11111111111111111111111111111111": System Program
+      commitment: confirmed`
       return yaml.parse(configYml);
     }
 
-  },[userName]);
+  },[userNameData,mintData]);
 
     return (
     <>
@@ -113,7 +115,7 @@ const EstablishConnection = () => {
       </div> */}
       {
         connectionUrl && 
-          <EstablishPayer connectionUrl={connectionUrl}/>
+          <EstablishPayer connectionUrl={connectionUrl} />
       }
     </>
     );

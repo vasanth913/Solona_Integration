@@ -11,6 +11,8 @@ const NavbarComp = () => {
 
     const userName = useSelector((state: RootState) => state.loginReducer.userNameResponse);
 
+    const mintData = useSelector((state: RootState) => state.mintReducer.mintDataValues);
+
     return(
       <>
         <Navbar bg="dark" variant="dark">
@@ -26,11 +28,15 @@ const NavbarComp = () => {
             Solona
             </Navbar.Brand>
             {
-                userName &&
+                userName.length > 0 &&
                 <Navbar.Text>
                     <PersonCircle size={30} /> 
                     <span style={{paddingLeft: '10px'}}>{userName}</span>
-                    <EstablishConnection />
+                    {
+                      mintData !== "" && mintData !== undefined && Object.keys(mintData).length ?
+                        <EstablishConnection userNameData={userName} mintData={mintData[0]} />
+                        : ''
+                    }
                 </Navbar.Text>
             }
             </Container>

@@ -2,15 +2,44 @@ import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import Stepper from 'bs-stepper';
-import { Table, Button, Modal, Form } from 'react-bootstrap';
-import mainLogo from '../Components/images/nokia-C7.png'; 
+import {  Button, Modal, Form } from 'react-bootstrap';
+import { useForm } from "react-hook-form";
+import {mintComponentsData} from '../redux/actions/loginUser';
+import { useDispatch, useSelector} from "react-redux";
+import type { RootState } from '../redux/store';
 
  export const Dashboard = () => {
-    const [active, setActive] = useState(1)
     const [show, setShow] = useState(false);
-  
-    const handleInputChange = () => {
+    const [mintResponseData, setMintResponseData] = useState("");
 
+    const dispatch = useDispatch();
+  
+    const {
+      register,
+      handleSubmit,
+      reset,
+      formState: { errors }
+    } = useForm();
+  
+    const onSubmit = (data) => {
+      dispatch(mintComponentsData(data,"mintComponent"));
+
+    }; // your form submit function which will invoke after successful validation
+
+    const mintResponse = useSelector((state: RootState) => state.mintReducer.mintResponse);
+
+    useEffect(() => {
+      setMintResponseData(mintResponse)
+    },[mintResponse])
+  
+    const clearValues = (e) => {
+      reset({
+        componentid: "",
+        description: "",
+        name: "",
+        serielNo: ""
+      })
+      setMintResponseData("");
     }
 
     const showModal = (e) => {
@@ -38,7 +67,7 @@ import mainLogo from '../Components/images/nokia-C7.png';
             </div>
             <div className="line"></div>
             <div className="step" data-target="#test-l-2">
-              <button className="step-trigger">
+              <button className="step-trigger" disabled={Object.keys(mintResponseData).length === 0} onClick={clearValues}>
                 <span className="bs-stepper-circle">2</span>
                 <span className="bs-stepper-label">Manufacture</span>
               </button>
@@ -59,32 +88,64 @@ import mainLogo from '../Components/images/nokia-C7.png';
             </div>
           </div>
           <div className="bs-stepper-content">
-            <form>
               <div id="test-l-1" className="content">
                 <div className="form-group">
-                  <Table striped>
-                      <thead>
-                        <tr>
-                          <th></th>
-                          <th>Type</th>
-                          <th>Brand</th>
-                          <th>Serial Number</th>
-                          <th></th>
-                          <th>Address</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><img src={mainLogo}  alt=""  height={100} width={100}></img></td>
-                          <td colSpan = {2}>Samsung</td>
-                          <td>SCL-521dxq1</td>
-                          <td>x1</td>
-                          <td>744e7c5b86e47dfob</td>
-                        </tr>
-                      </tbody>
-                    </Table>
+                  <Form onSubmit={handleSubmit(onSubmit)}>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
+                          Component ID
+                        </Form.Label>
+                        <Form.Control {...register("componentid", {
+                          required: true,
+                          minLength: 1,
+                          maxLength: 255,
+                        })} type="text" placeholder="Enter Component ID" />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
+                          Description 
+                        </Form.Label>
+                        <Form.Control {...register("description", {
+                          required: true,
+                          minLength: 10,
+                          maxLength: 64,
+                        })} type="text" placeholder="Enter Description" />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
+                          Name
+                        </Form.Label>
+                        <Form.Control {...register("name", {
+                          required: true,
+                          minLength: 5,
+                          maxLength: 16,
+                        })} type="text" placeholder="Enter the Name" />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
+                          Serial no.
+                        </Form.Label>
+                        <Form.Control {...register("serielNo", {
+                          required: true,
+                          minLength: 5,
+                          maxLength: 16,
+                        })} type="text" placeholder="Enter the Serial No" />
+                      </Form.Group>
+                      <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit" >Mint A Component</Button>
+                      <br /> 
+                        <div className="form-group">
+                         <label htmlFor="exampleFormControlTextarea1">
+                          Mint Response
+                          </label>
+                          <textarea
+                          className="form-control"
+                          id="exampleFormControlTextarea1"
+                          rows={5}
+                          defaultValue = {Object.keys(mintResponseData).length === 0 ? '' : mintResponseData}
+                          />
+                        </div>
+                    </Form>
                 </div>
-                <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" >Mint All Components</Button>
               </div>
               <div id="test-l-2" className="content">
                 <div className="form-group">
@@ -143,7 +204,7 @@ import mainLogo from '../Components/images/nokia-C7.png';
                       </div>
                   </div>
                 </div>
-                <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" >Mint All Components</Button>
+                <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" >Mint a Component</Button>
               </div>
               <div id="test-l-3" className="content text-center">
                 In Progress
@@ -151,7 +212,6 @@ import mainLogo from '../Components/images/nokia-C7.png';
               <div id="test-l-4" className="content text-center">
                 In Progress
               </div>
-            </form>
           </div>
         </div>
       </div>

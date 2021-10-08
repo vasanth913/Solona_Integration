@@ -12,6 +12,9 @@ import {
   import * as borsh from 'borsh';
   import CreateComponentQcom from '../Components/createComponentQcom';
   import { useHistory } from "react-router-dom";
+  import type { RootState } from '../redux/store';
+  import { useDispatch, useSelector} from "react-redux";
+  import {mintResponse} from '../redux/actions/loginUser';
 
 const CheckProgram = ({connectionUrl, payerUrl}) => {
 
@@ -21,7 +24,10 @@ const CheckProgram = ({connectionUrl, payerUrl}) => {
 
   const [programIdVal , setProgramId] = useState ({});
 
-  
+  const mintData = useSelector((state: RootState) => state.mintReducer.mintDataValues);
+
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     /**
@@ -145,7 +151,7 @@ checkProgram();
   console.log(`Using program ${programId.toBase58()}`);
   
     // Derive the address (public key) of a component account from the program so that it's easy to find later.
-  const COMPONENT_SEED_QCOM = 'component-qcom-1';
+  const COMPONENT_SEED_QCOM = mintData && mintData[0].componentid;
   qcom = await PublicKey.createWithSeed(
     payerUrl.publicKey,
     COMPONENT_SEED_QCOM,
@@ -182,7 +188,7 @@ checkProgram();
     }
   
     // Derive the address (public key) of a greeting account from the program so that it's easy to find later.
-    const COMPONENT_SEED_NVD = 'component-nvd-1';
+    const COMPONENT_SEED_NVD = mintData && mintData[0].componentid;
     nvd = await PublicKey.createWithSeed(
       payerUrl.publicKey,
       COMPONENT_SEED_NVD,
@@ -242,14 +248,14 @@ checkProgram();
     
       //QCOM ///////////////////////////////////////////////////////////////////////////////////////
       async function createComponentQcom(): Promise<void> {
-          console.log('Creating component for account:', qcom);
+          console.log('Creating component for account:', qcom.toBase58());
         
               let this_component = new Component()
               this_component.opcode = 100; // u8
-              this_component.id = 101; //u8
-              this_component.description = new TextEncoder().encode("Mobile CPU (8nm technology), 4 core, 4GB, 16MB cache. Made in SG.".substring(0, 64).padEnd(64,'*')); // len exactly 64bytes
-              this_component.name = new TextEncoder().encode("SnapGodzilla".substring(0, 16).padEnd(16,'*')); // len exactly 16bytes
-              this_component.serial_no = new TextEncoder().encode("QPUA-QW-10009".substring(0, 16).padEnd(16,'0')); // len exactly 16bytes
+              this_component.id = mintData && mintData[0].componentid; //u8
+              this_component.description = new TextEncoder().encode((mintData && mintData[0].description).substring(0, 64).padEnd(64,'*')); // len exactly 64bytes
+              this_component.name = new TextEncoder().encode(( mintData && mintData[0].name).substring(0, 16).padEnd(16,'*')); // len exactly 16bytes
+              this_component.serial_no = new TextEncoder().encode(( mintData && mintData[0].serielNo).substring(0, 16).padEnd(16,'0')); // len exactly 16bytes
               this_component.active = 1;
               // parent and children array initialized to 0 and program will set it on ledger
               
@@ -270,7 +276,10 @@ checkProgram();
                 [payerUrl],
               );
               console.log("Transaction receipt: ", tx);
-              updateComponentQcom();
+              if(mintData && mintData[1] !== "mintComponent"){
+                updateComponentQcom();
+              }
+              dispatch(mintResponse(tx));
           }
 
                 // Update
@@ -519,7 +528,7 @@ async function reportComponentNvd(): Promise<void> {
 }
 
 
-  },[]);
+  },[connectionUrl,payerUrl]);
 
   return (
     <div className="App">
