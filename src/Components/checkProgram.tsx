@@ -24,7 +24,25 @@ const CheckProgram = ({connectionUrl, payerUrl}) => {
 
   const [programIdVal , setProgramId] = useState ({});
 
+  let mintDataValue;
+
   const mintData = useSelector((state: RootState) => state.mintReducer.mintDataValues);
+
+  const mintProductData = useSelector((state: RootState) => state.mintReducer.mintProductDataValues);
+
+  const burnComponentData = useSelector((state: RootState) => state.mintReducer.burnComponentData);
+
+  const mintProductFlag = useSelector((state: RootState) => state.mintReducer.mintProductFlag);
+
+  const burnProductFlag = useSelector((state: RootState) => state.mintReducer.burnProductFlag);
+
+  if(mintProductData && mintProductData[1] === 'mintAProduct'){
+    mintDataValue = mintProductData && mintProductData[0];
+  } else {
+    mintDataValue = mintData && mintData[0];
+  }
+
+
 
   const dispatch = useDispatch();
 
@@ -151,7 +169,7 @@ checkProgram();
   console.log(`Using program ${programId.toBase58()}`);
   
     // Derive the address (public key) of a component account from the program so that it's easy to find later.
-  const COMPONENT_SEED_QCOM = mintData && mintData[0].componentid;
+  const COMPONENT_SEED_QCOM = mintDataValue && mintDataValue.componentid;
   qcom = await PublicKey.createWithSeed(
     payerUrl.publicKey,
     COMPONENT_SEED_QCOM,
@@ -188,7 +206,7 @@ checkProgram();
     }
   
     // Derive the address (public key) of a greeting account from the program so that it's easy to find later.
-    const COMPONENT_SEED_NVD = mintData && mintData[0].componentid;
+    const COMPONENT_SEED_NVD = mintDataValue && mintDataValue.componentid;
     nvd = await PublicKey.createWithSeed(
       payerUrl.publicKey,
       COMPONENT_SEED_NVD,
@@ -226,7 +244,6 @@ checkProgram();
     setQCOM(qcom.toBase58());
     setNvd(nvd.toBase58());
   
-    console.log('programIdVal ****', programId);
     console.log("Component Qcom PDA: ", qcom.toBase58());
     console.log("Component Nvd PDA: ", nvd.toBase58());
     createComponentQcom();
@@ -252,10 +269,10 @@ checkProgram();
         
               let this_component = new Component()
               this_component.opcode = 100; // u8
-              this_component.id = mintData && mintData[0].componentid; //u8
-              this_component.description = new TextEncoder().encode((mintData && mintData[0].description).substring(0, 64).padEnd(64,'*')); // len exactly 64bytes
-              this_component.name = new TextEncoder().encode(( mintData && mintData[0].name).substring(0, 16).padEnd(16,'*')); // len exactly 16bytes
-              this_component.serial_no = new TextEncoder().encode(( mintData && mintData[0].serielNo).substring(0, 16).padEnd(16,'0')); // len exactly 16bytes
+              this_component.id = mintDataValue && mintDataValue.componentid; //u8
+              this_component.description = new TextEncoder().encode((mintDataValue && mintDataValue.description).substring(0, 64).padEnd(64,'*')); // len exactly 64bytes
+              this_component.name = new TextEncoder().encode(( mintDataValue && mintDataValue.name).substring(0, 16).padEnd(16,'*')); // len exactly 16bytes
+              this_component.serial_no = new TextEncoder().encode(( mintDataValue && mintDataValue.serielNo).substring(0, 16).padEnd(16,'0')); // len exactly 16bytes
               this_component.active = 1;
               // parent and children array initialized to 0 and program will set it on ledger
               
@@ -276,9 +293,16 @@ checkProgram();
                 [payerUrl],
               );
               console.log("Transaction receipt: ", tx);
-              if(mintData && mintData[1] !== "mintComponent"){
-                updateComponentQcom();
+              if(mintProductFlag){
+               for(let i=0; i < mintProductData[2].length; i++){
+                addAsChild();
+               }
               }
+              if(burnProductFlag){
+                for(let i=0; i < burnComponentData[1].length; i++){
+                  burnQcom();
+                }
+               }
               dispatch(mintResponse(tx));
           }
 
@@ -499,7 +523,7 @@ async function reportComponentNvd(): Promise<void> {
     [payerUrl],
   );
   console.log("Transaction receipt: ", tx);
-  burnQcom();
+  //burnQcom();
 }
 
 // Burn Nvd

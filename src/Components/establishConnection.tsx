@@ -88,7 +88,7 @@ const EstablishConnection = ({userNameData, mintData}) => {
       return yaml.parse(configYml);
     }
 
-  },[userNameData,mintData]);
+  },[mintData]);
 
     return (
     <>

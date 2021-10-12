@@ -2,6 +2,7 @@ import { actionTypes } from "../constants/action-types";
 
 const inititalState = {
     userNameResponse : [],
+    roleChange: ""
 }
 
 export const loginReducer = (state = inititalState, {type, payload}) => {
@@ -11,6 +12,11 @@ export const loginReducer = (state = inititalState, {type, payload}) => {
             return {
                 ...state, 
                 userNameResponse: payload
+            };
+        case actionTypes.ROLE_CHANGE:
+            return {
+                ...state, 
+                roleChange: payload
             };
         default:
             return state;

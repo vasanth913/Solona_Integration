@@ -3,7 +3,7 @@ import { useDispatch, useSelector} from "react-redux";
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useHistory } from "react-router-dom";
-import {loginUser} from '../redux/actions/loginUser';
+import {loginUser, roleChange} from '../redux/actions/loginUser';
 
 const Login = () => {
 
@@ -11,6 +11,8 @@ const Login = () => {
     
 
     const [userNameVal, setUserName] = useState("");
+
+    const [role, setRole] = useState("");
 
     const dispatch = useDispatch();
 
@@ -22,6 +24,12 @@ const Login = () => {
 
     const login = () => {
         dispatch(loginUser(userNameVal));
+        history.push("/dashboard");
+    }
+
+    const roleDropdown = (event) => {
+        setRole(event.target.value);
+        dispatch(roleChange(event.target.value));
         history.push("/dashboard");
     }
 
@@ -45,7 +53,14 @@ const Login = () => {
                 <div className="form-group" style={{marginTop: '10px'}}>
                     <Button variant="primary" onClick={login}>Login</Button>
                 </div>
-                </form>
+            </form>
+            {/* <br />
+            <div>
+              <select  onChange={(event)=> roleDropdown(event)} value={role} aria-label="Default select example">
+                  <option value="Select Role">Select Role</option>
+                  <option value="Manufacturer">Manufacturer</option>
+               </select>
+           </div> */}
             </div>
         </div>
         </>
