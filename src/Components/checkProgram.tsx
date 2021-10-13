@@ -14,7 +14,7 @@ import {
   import { useHistory } from "react-router-dom";
   import type { RootState } from '../redux/store';
   import { useDispatch, useSelector} from "react-redux";
-  import {mintResponse} from '../redux/actions/loginUser';
+  import {mintResponse, enableAddAsaChildButton, burnResponse} from '../redux/actions/loginUser';
 
 const CheckProgram = ({connectionUrl, payerUrl}) => {
 
@@ -29,12 +29,15 @@ const CheckProgram = ({connectionUrl, payerUrl}) => {
   const mintData = useSelector((state: RootState) => state.mintReducer.mintDataValues);
 
   const mintProductData = useSelector((state: RootState) => state.mintReducer.mintProductDataValues);
-
+  
+  const addAsAChildValue = useSelector((state: RootState) => state.mintReducer.addAsAChildValue);
+  
   const burnComponentData = useSelector((state: RootState) => state.mintReducer.burnComponentData);
 
   const mintProductFlag = useSelector((state: RootState) => state.mintReducer.mintProductFlag);
 
   const burnProductFlag = useSelector((state: RootState) => state.mintReducer.burnProductFlag);
+
 
   if(mintProductData && mintProductData[1] === 'mintAProduct'){
     mintDataValue = mintProductData && mintProductData[0];
@@ -169,7 +172,14 @@ checkProgram();
   console.log(`Using program ${programId.toBase58()}`);
   
     // Derive the address (public key) of a component account from the program so that it's easy to find later.
-  const COMPONENT_SEED_QCOM = mintDataValue && mintDataValue.componentid;
+  
+    let COMPONENT_SEED_QCOM = mintDataValue && mintDataValue.componentid;
+
+  if(burnComponentData && burnComponentData[0] === "BurnAProduct"){
+    COMPONENT_SEED_QCOM = burnComponentData[1];
+  } else if (addAsAChildValue && addAsAChildValue[0] === "addAsAChild" ){
+    COMPONENT_SEED_QCOM = addAsAChildValue[1];
+  } 
   qcom = await PublicKey.createWithSeed(
     payerUrl.publicKey,
     COMPONENT_SEED_QCOM,
@@ -293,16 +303,25 @@ checkProgram();
                 [payerUrl],
               );
               console.log("Transaction receipt: ", tx);
-              if(mintProductFlag){
-               for(let i=0; i < mintProductData[2].length; i++){
+             if(addAsAChildValue && addAsAChildValue[0] === "addAsAChild"){
                 addAsChild();
-               }
-              }
-              if(burnProductFlag){
-                for(let i=0; i < burnComponentData[1].length; i++){
-                  burnQcom();
-                }
-               }
+             }
+             if(burnComponentData && burnComponentData[0] === "BurnAProduct"){
+                burnQcom();
+             }
+             if(mintProductData && mintProductData[1] === 'mintAProduct'){
+                dispatch(enableAddAsaChildButton(true));
+             }
+              // if(mintProductData && mintProductData[1] === 'mintAProduct'){
+              //  for(let i=0; i < mintProductData[2].length; i++){
+              //   addAsChild();
+              //  }
+              // }
+              // if(burnComponentData && burnComponentData[0] === "BurnAProduct"){
+              //   for(let i=0; i < burnComponentData[1].length; i++){
+              //     burnQcom();
+              //   }
+              //  }
               dispatch(mintResponse(tx));
           }
 
@@ -522,8 +541,26 @@ async function reportComponentNvd(): Promise<void> {
     new Transaction().add(instruction),
     [payerUrl],
   );
+  var data = Object.values(Object.entries(localStorage).filter(([key]) => key.includes(addAsAChildValue[1])));
+  data && data.length > 0 && data.map(elem => {
+    let val1 = JSON.parse(elem[1]);
+    console.log('***', val1);
+    let obj = {};
+   // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+      obj.id = val1.id;
+   // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+      obj.description = val1.description;
+   // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+      obj.name = val1.name;
+   // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+      obj.serielNo = val1.serielNo;
+   // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+      obj.parent = mintProductData[0].componentid ;
+  localStorage.setItem(val1.id, JSON.stringify(obj));
+  })
+  
   console.log("Transaction receipt: ", tx);
-  //burnQcom();
+  burnQcom();
 }
 
 // Burn Nvd
@@ -548,7 +585,46 @@ async function reportComponentNvd(): Promise<void> {
     new Transaction().add(instruction),
     [payerUrl],
   );
+ 
+  const valueVariable =  Object.values(localStorage);
+  var data = Object.values(Object.entries(localStorage).filter(([key]) => key.includes(burnComponentData[1] )));
+
+  data && data.length > 0 && data.map(elem => {
+    let val1 = JSON.parse(elem[1]);
+    let val2 = parseInt(val1.id);
+    if(val1.id == burnComponentData[1]) {
+      localStorage.removeItem(val1.id);
+      
+    }
+  })
+
+  
+
+  valueVariable && valueVariable.length > 0 && valueVariable.map(elem => {
+      
+  var dataPush = [];
+
+ for(let i=0; i < valueVariable.length; i++){
+   elem = JSON.parse(valueVariable[i]);
+   if(elem.parent == burnComponentData[1]){
+    let obj = {};
+    // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+       obj.id = elem.id;
+    // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+       obj.description = elem.description;
+    // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+       obj.name = elem.name;
+    // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+       obj.serielNo = elem.serielNo;
+    // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+       obj.parent = 0;
+       localStorage.setItem( elem.id, JSON.stringify(obj));
+    }   
+   }
+ })
+
   console.log("Transaction receipt: ", tx);
+  dispatch(burnResponse(tx));
 }
 
 

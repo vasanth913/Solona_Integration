@@ -16,15 +16,12 @@ const NavbarComp = () => {
 
     const mintProductData = useSelector((state: RootState) => state.mintReducer.mintProductDataValues);
 
-    const mintComponentFlag = useSelector((state: RootState) => state.mintReducer.mintComponentFlag);
+    const burnComponentData = useSelector((state: RootState) => state.mintReducer.burnComponentData);
 
-    const mintProductFlag = useSelector((state: RootState) => state.mintReducer.mintProductFlag);
-
-    const burnProductFlag = useSelector((state: RootState) => state.mintReducer.burnProductFlag);
-
-    console.log('mintProductData ***', mintData);
-
+    const addAsAChildValue = useSelector((state: RootState) => state.mintReducer.addAsAChildValue);
     
+    console.log('mintAProduct4 ****', addAsAChildValue);
+
 
     return(
         <Navbar bg="dark" variant="dark">
@@ -37,7 +34,7 @@ const NavbarComp = () => {
                 height="30"
                 className="d-inline-block align-top"
                 />{' '}
-            Circular Block
+            CircleBlock
             </Navbar.Brand>
             {
                 userName.length > 0 &&
@@ -45,20 +42,25 @@ const NavbarComp = () => {
                     <PersonCircle size={30} /> 
                     <span style={{paddingLeft: '10px'}}>{userName}</span>
                     {
-                      mintData && mintData.length > 0 && mintProductData.length === 0 ?
-                        <EstablishConnection userNameData={userName} mintData={mintData[0]} />
+                      mintData && mintData.length > 0 ?
+                        <EstablishConnection mintData={mintData[0]}   />
                         : ''
                     }
                     {
                       mintProductData && mintProductData.length > 0 ?
-                        <EstablishConnection userNameData={userName}  mintData={mintData[0]} />
+                        <EstablishConnection  mintData={mintProductData[0]} />
                         : ''
                     }
-                    {/* {
-                      burnProductFlag ?
-                        <EstablishConnection userNameData={userName}  mintData={mintData[0]} />
+                    {
+                        addAsAChildValue && addAsAChildValue.length > 0 ?
+                        <EstablishConnection mintData={addAsAChildValue[1]} />
                         : ''
-                    } */}
+                    }
+                    {
+                      burnComponentData && burnComponentData.length > 0 ?
+                        <EstablishConnection   mintData={burnComponentData[1]} />
+                        : ''
+                    }
                 </Navbar.Text>
             }
             </Container>

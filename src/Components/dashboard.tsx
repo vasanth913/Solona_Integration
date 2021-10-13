@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import Stepper from 'bs-stepper';
-import {  Button, Modal, Form , Table } from 'react-bootstrap';
+import {  Button, Modal, Form , Table, Tabs, Tab } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
-import {mintComponentsData, mintProductComponentsData, mintComponent, mintProduct, burnProduct, burnComponentData } from '../redux/actions/loginUser';
+import {mintComponentsData, mintProductComponentsData, mintComponent, mintProduct, burnProduct, burnComponentData, addAsAChild } from '../redux/actions/loginUser';
 import { useDispatch, useSelector} from "react-redux";
 import type { RootState } from '../redux/store';
 import {v4 as uuid_v4} from 'uuid';
@@ -12,14 +12,17 @@ import {v4 as uuid_v4} from 'uuid';
  export const Dashboard = () => {
     const [show, setShow] = useState(false);
     const [mintResponseData, setMintResponseData] = useState("");
-    const [checkboxValueRetrive, setCheckboxValue] = useState([]);
-    const [checkboxValueBurnRetrive, setCheckboxBurnValue] = useState([]);
+    const [checkboxValueRetrive, setCheckboxValue] = useState("");
+    const [checkboxValueBurnRetrive, setCheckboxBurnValue] = useState("");
     const [tableData, setTableData] = useState([]);
+    const [searchDropDownText, setDropDownText] = useState();
+    const [dropDownData, setDropDownData] = useState([]);
+    const [addChildButton, setAddChildButton] = useState(true);
     const roleChange = useSelector((state: RootState) => state.loginReducer.roleChange);
 
-    const [roleStateChange, setRoleChange] = useState(false);
+    const [key, setKey] = useState('profile');
 
-   
+    const [roleStateChange, setRoleChange] = useState(false);
 
     useEffect(() => {
       if(roleChange === "Manufacturer"){
@@ -43,9 +46,19 @@ import {v4 as uuid_v4} from 'uuid';
       handleSubmit: handleSubmit2,
     } = useForm();
 
+    const {
+      register: register3,
+      formState: { errors: errors3 },
+      handleSubmit: handleSubmit3,
+    } = useForm();
+
     const mintData = useSelector((state: RootState) => state.mintReducer.mintDataValues);
 
     const mintResponse = useSelector((state: RootState) => state.mintReducer.mintResponse);
+
+    const addAsAChildButton = useSelector((state: RootState) => state.mintReducer.addAsAChildButton);
+
+    const burnResponseData = useSelector((state: RootState) => state.mintReducer.burnResponseData);
 
     const onSubmit = (data) => {
       dispatch(mintComponent(true));
@@ -56,25 +69,80 @@ import {v4 as uuid_v4} from 'uuid';
     }; // your form submit function which will invoke after successful validation
 
     const serielDropdown = (event) => {
+
       var searchText = event.target.value;
+
+      console.log('searchText', searchText);
+
+      setDropDownText(searchText);
 
       var data = Object.values(Object.entries(localStorage).filter(([key]) => key.includes(searchText)));
 
+
+      //      let arrToObjects =  data && data.length > 0 && data.map((item, idx) => {
+      //       return { [item[idx]]: item[1] };
+      //     })
+
+      // console.log('arrToObjects', arrToObjects);
+      
+      //pushToAry("myName", "myVal");
       data && data.length > 0 && data.map(elem => {
-          
           let val1 = JSON.parse(elem[1]);
-          console.log('elem ***', val1.id);
           setTableData(val1);
       })
+ 
+     
   }
 
 
   const keyVariable =  Object.keys(localStorage);
 
+   const valueVariable =  Object.values(localStorage);
 
+
+  const reCycle = () => {
+
+    valueVariable && valueVariable.length > 0 && valueVariable.map(elem => {
+      
+       var dataPush = [];
+
+    for(let i=0; i < valueVariable.length; i++){
+      elem = JSON.parse(valueVariable[i]);
+      if(elem.parent == 0){
+        
+        dataPush.push(elem.id);
+      }   
+         setDropDownData(dataPush);
+      }
+    })
+  }
+
+  useEffect(() => {
+    valueVariable && valueVariable.length > 0 && valueVariable.map(elem => {
+      
+      var dataPush = [];
+
+   for(let i=0; i < valueVariable.length; i++){
+     elem = JSON.parse(valueVariable[i]);
+     if(elem.parent == 0){
+       
+       dataPush.push(elem.id);
+     }   
+        setDropDownData(dataPush);
+     }
+   })
+  },[burnResponseData])
+
+  
+   
+  
     useEffect(() => {
       setMintResponseData(mintResponse)
     },[mintResponse])
+
+    useEffect(() => {
+      setAddChildButton(false)
+    },[addAsAChildButton])
   
     // const clearValues = (e) => {
     //   reset({
@@ -108,6 +176,18 @@ import {v4 as uuid_v4} from 'uuid';
           var checkBoxes = grid.getElementsByTagName("INPUT");
           var message = "";
           var pushValue = [];
+        //   for (var i = 0; i < checkBoxes.length; i++) {
+        //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+        //     if (checkBoxes[i].checked) {
+        //         var row = checkBoxes[i].parentNode.parentNode;
+        //         // @ts-expect-error: Let's ignore a compile error like this unreachable code 
+        //         message += row.cells[1].innerHTML;
+        //         message += "\n";
+        //     }
+        // }
+ 
+        // //Display selected Row data in Alert Box.
+        // alert(message);
           //Loop through the CheckBoxes.
           for (var i = 0; i < checkBoxes.length; i++) {
             // @ts-expect-error: Let's ignore a compile error like this unreachable code 
@@ -120,13 +200,15 @@ import {v4 as uuid_v4} from 'uuid';
               //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
               //     message += "   " + row.cells[3].innerHTML;
               //     message += "\n";
-              pushValue.push(message);
-
-              if(pushValue[0].length > 1) {
-                setCheckboxValue(pushValue[0].split(","));
-              } else {
-                setCheckboxValue(pushValue[0]);
-              }
+              console.log('message ***', message);
+              setCheckboxValue(message);
+              //pushValue.push(message);
+              
+              // if(pushValue[0].length > 1) {
+              //   setCheckboxValue(pushValue[0].split(","));
+              // } else {
+              //   setCheckboxValue(pushValue[0]);
+              // }
                }
           }      
     }
@@ -151,13 +233,14 @@ import {v4 as uuid_v4} from 'uuid';
           //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
           //     message += "   " + row.cells[3].innerHTML;
           //     message += "\n";
-          pushValue.push(message);
+          // pushValue.push(message);
+          setCheckboxBurnValue(message);
 
-          if(pushValue[0].length > 1) {
-            setCheckboxBurnValue(pushValue[0].split(","));
-          } else {
-            setCheckboxBurnValue(pushValue[0]);
-          }
+          // if(pushValue[0].length > 1) {
+          //   setCheckboxBurnValue(pushValue[0].split(","));
+          // } else {
+          //   setCheckboxBurnValue(pushValue[0]);
+          // }
            }
       }      
 }
@@ -166,16 +249,26 @@ import {v4 as uuid_v4} from 'uuid';
 
     const getSelected = (data) => {
 
+      console.log('mintAProduct1 ****');
       // dispatch(mintComponent(false));
       // dispatch(mintProduct(true));
       // dispatch(burnProduct(false));
-      dispatch(mintProductComponentsData(data,"mintAProduct", checkboxValueRetrive));
+      dispatch(mintProductComponentsData(data,"mintAProduct"));
+    }
+
+    const addChildParent = () => {
+      console.log('addChildParent Button');
+      dispatch(addAsAChild("addAsAChild", checkboxValueRetrive));
+    }
+
+    const reProduceEmpty = () => {
+      setTableData([]);
     }
 
     const burnAProduct = () => {
-      dispatch(mintComponent(false));
-      dispatch(mintProduct(false));
-      dispatch(burnProduct(true));
+      // dispatch(mintComponent(false));
+      // dispatch(mintProduct(false));
+      // dispatch(burnProduct(true));
       dispatch(burnComponentData("BurnAProduct", checkboxValueBurnRetrive));
 
     }; 
@@ -199,16 +292,16 @@ import {v4 as uuid_v4} from 'uuid';
             </div>
             <div className="line"></div>
             <div className="step" data-target="#test-l-3">
-              <button className="step-trigger">
+              <button className="step-trigger" onClick={reCycle}>
                 <span className="bs-stepper-circle">3</span>
                 <span className="bs-stepper-label">Recycle</span>
               </button>
             </div>
             <div className="line"></div>
             <div className="step" data-target="#test-l-4">
-              <button className="step-trigger">
+              <button className="step-trigger" onClick={reProduceEmpty}>
                 <span className="bs-stepper-circle">4</span>
-                <span className="bs-stepper-label">Re-product</span>
+                <span className="bs-stepper-label">Re-Produce</span>
               </button>
             </div>
           </div>
@@ -245,7 +338,7 @@ import {v4 as uuid_v4} from 'uuid';
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
-                          Serial no.
+                          Serial Number
                         </Form.Label>
                         <Form.Control {...register("serielNo", {
                           required: true,
@@ -346,7 +439,7 @@ import {v4 as uuid_v4} from 'uuid';
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
-                          Serial no.
+                          Serial Number
                         </Form.Label>
                         <Form.Control {...register2("serielNo", {
                           required: true,
@@ -354,22 +447,25 @@ import {v4 as uuid_v4} from 'uuid';
                           maxLength: 16,
                         })} type="text" placeholder="Enter the Serial No" />
                       </Form.Group>
+                      <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  >Mint a Product</Button>
                       <br />
                       <div>
                         <Form.Label column sm={2}>
-                            Select Seriel Number
+                            Select Component Id
                         </Form.Label>
                         <select onChange={(event)=> serielDropdown(event)} className="form-control" aria-label="Default select example">
-                          <option>Select Seriel Number</option>
+                          <option>Select Component Id</option>
                           {
                               keyVariable.map(elem => (
-                                  <option >{elem}</option>
+                                  <option key={uuid_v4()}>{elem}</option>
                                 
                               ))
                           }
                         </select>
                       </div> 
                       <br />
+                     <div>
+                      {
                       <Table striped bordered hover variant="dark" id="Table1">
                                   <thead>
                                     <tr>
@@ -377,7 +473,207 @@ import {v4 as uuid_v4} from 'uuid';
                                       <th>Id</th>
                                       <th>Name</th>
                                       <th>Description</th>
-                                      <th>Seriel Number</th>
+                                      <th>Serial Number</th>
+                                      {/* <th></th> */}
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {
+                                       
+                                         <tr key={uuid_v4()}>
+                                            <td style={{whiteSpace:'nowrap'}} >
+                                              {
+                                                tableData && Object.keys(tableData).length > 1 ?
+                                                <input type="checkbox" className="messageCheckbox" id="myCheck"
+                                                name="mintData" onChange={checkboxValue} value={checkboxValueRetrive} />
+                                                : ''
+                                              }
+                                             </td>
+                                            {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
+                                            <td style={{whiteSpace:'nowrap'}}>{tableData && tableData.id}</td>
+                                             {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
+                                            <td style={{whiteSpace:'nowrap'}}>{tableData && tableData.name}</td>
+                                             {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
+                                            <td style={{whiteSpace:'nowrap'}}>{tableData && tableData.description}</td>
+                                             {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
+                                            <td style={{whiteSpace:'nowrap'}} >{tableData && tableData.serielNo}</td>
+                                            {/* <td> <button type="button" style={{float:'right', marginTop:'10px', whiteSpace:'nowrap'}} className="btn btn-primary" onClick={(e) => showModal(e)} >Show Detail</button> </td> */}
+                                          </tr>
+                                    }
+                                  </tbody>
+                          </Table>
+                          }
+                        </div>
+                    </Form>  
+                </div>
+                <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  onClick={addChildParent} >Add as a Child</Button>
+              </div>
+              <div id="test-l-3" className="content">
+                <div className="form-group">
+                <Form.Label column sm={2}>
+                  Select Component Id
+                </Form.Label>
+                <select onChange={(event)=> serielDropdown(event)} className="form-control" aria-label="Default select example">
+                  <option>Select Component Id</option>
+                  {
+                      dropDownData && dropDownData.map(elem => (
+                          <option key={uuid_v4()}>{elem}</option>
+                        
+                      ))
+                  }
+                </select>
+                <br />
+                <Table striped bordered hover variant="dark" id="Table2">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Serial Number</th>
+                        {/* <th></th> */}
+                      </tr>
+                    </thead>
+                    <tbody>
+                                    {
+                                         <tr key={uuid_v4()}>
+                                            <td style={{whiteSpace:'nowrap'}} >
+                                            {
+                                                tableData && Object.keys(tableData).length > 1 ?
+                                                <input type="checkbox" className="messageCheckbox" 
+                                                 name="mintData" onChange={checkboxBurnValue} />
+                                                : ''
+                                              }
+                                             </td>
+                                            {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
+                                            <td style={{whiteSpace:'nowrap'}}>{tableData && tableData.id}</td>
+                                             {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
+                                            <td style={{whiteSpace:'nowrap'}}>{tableData && tableData.name}</td>
+                                             {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
+                                            <td style={{whiteSpace:'nowrap'}}>{tableData && tableData.description}</td>
+                                             {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
+                                            <td style={{whiteSpace:'nowrap'}} >{tableData && tableData.serielNo}</td>
+                                            {/* <td> <button type="button" style={{float:'right', marginTop:'10px', whiteSpace:'nowrap'}} className="btn btn-primary" onClick={(e) => showModal(e)} >Show Detail</button> </td> */}
+                                          </tr>
+                                       
+                                    }
+                      </tbody>
+                    </Table>
+                  <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit" onClick={burnAProduct}  >Burn a Product</Button>
+                </div>
+              </div>
+              <div id="test-l-4" className="content">
+              <div className="form-group">
+                  <div>
+                      <div className="row">
+                          <div className="col-md-5 offset-md-2">
+                          <div className="form-row">
+                                <div className="form-group col-md-6">
+                                
+                                  <Modal
+                                      show={show}
+                                      onHide={() => setShow(false)}
+                                      dialogClassName="modal-90w"
+                                      aria-labelledby="example-custom-modal-styling-title"
+                                    >
+                                      <Modal.Header closeButton>
+                                        <Modal.Title id="example-custom-modal-styling-title">
+                                          General Info
+                                        </Modal.Title>
+                                      </Modal.Header>
+                                      <Modal.Body>
+                                      <Form>
+                                        <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                                          <Form.Label column sm={2}>
+                                            Type
+                                          </Form.Label>
+                                            CPU
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                                          <Form.Label column sm={2}>
+                                            Brand
+                                          </Form.Label>
+                                            QualComm
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                                          <Form.Label column sm={2}>
+                                            Serial
+                                          </Form.Label>
+                                            Snapdragon 888
+                                        </Form.Group>
+                                      </Form>
+                                      </Modal.Body>
+                                    </Modal>
+                                </div>
+                            </div>                      
+                          </div>
+                      </div>
+                  </div>
+                  <Form key={2} onSubmit={handleSubmit3(getSelected)}>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
+                          Component ID
+                        </Form.Label>
+                        <Form.Control {...register3("componentid", {
+                          required: true,
+                          minLength: 1,
+                          maxLength: 255,
+                        })} type="text" placeholder="Enter Component ID" />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
+                          Description 
+                        </Form.Label>
+                        <Form.Control {...register3("description", {
+                        })} type="text" placeholder="Enter Description" />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
+                          Name
+                        </Form.Label>
+                        <Form.Control {...register3("name", {
+                          required: true,
+                          minLength: 5,
+                          maxLength: 16,
+                        })} type="text" placeholder="Enter the Name" />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
+                          Serial Number
+                        </Form.Label>
+                        <Form.Control {...register3("serielNo", {
+                          required: true,
+                          minLength: 5,
+                          maxLength: 16,
+                        })} type="text" placeholder="Enter the Serial No" />
+                      </Form.Group>
+                      <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  >Re-Produce a Product</Button>
+                      <br />
+                      <div>
+                        <Form.Label column sm={2}>
+                          Select Component Id
+                        </Form.Label>
+                        <select onChange={(event)=> serielDropdown(event)} className="form-control" aria-label="Default select example">
+                          <option>Select Component Id</option>
+                          {
+                              keyVariable.map(elem => (
+                                  <option key={uuid_v4()}>{elem}</option>
+                                
+                              ))
+                          }
+                        </select>
+                      </div> 
+                      <br />
+                     <div>
+                      {
+                      <Table striped bordered hover variant="dark" id="Table1">
+                                  <thead>
+                                    <tr>
+                                      <th></th>
+                                      <th>Id</th>
+                                      <th>Name</th>
+                                      <th>Description</th>
+                                      <th>Serial Number</th>
                                       {/* <th></th> */}
                                     </tr>
                                   </thead>
@@ -386,8 +682,13 @@ import {v4 as uuid_v4} from 'uuid';
                                      
                                          <tr key={uuid_v4()}>
                                             <td style={{whiteSpace:'nowrap'}} >
-                                              <input type="checkbox" className="messageCheckbox" 
-                                              name="mintData" onChange={checkboxValue} /></td>
+                                            {
+                                                tableData && Object.keys(tableData).length > 1 ?
+                                                <input type="checkbox" className="messageCheckbox" id="myCheck"
+                                              name="mintData" onChange={checkboxValue} value={checkboxValueRetrive} />
+                                                : ''
+                                            }
+                                            </td>
                                             {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
                                             <td style={{whiteSpace:'nowrap'}}>{tableData && tableData.id}</td>
                                              {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
@@ -402,58 +703,11 @@ import {v4 as uuid_v4} from 'uuid';
                                     }
                                   </tbody>
                           </Table>
-                      <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  >Mint a Product</Button>
+                          }
+                        </div>
                     </Form>  
                 </div>
-              </div>
-              <div id="test-l-3" className="content">
-                <div className="form-group">
-                <Form.Label column sm={2}>
-                    Select Seriel Number
-                </Form.Label>
-                <select onChange={(event)=> serielDropdown(event)} className="form-control" aria-label="Default select example">
-                  <option>Select Seriel Number</option>
-                  {
-                      keyVariable.map(elem => (
-                          <option >{elem}</option>
-                        
-                      ))
-                  }
-                </select>
-                <br />
-                <Table striped bordered hover variant="dark" id="Table2">
-                    <thead>
-                      <tr>
-                        <th></th>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Seriel Number</th>
-                        {/* <th></th> */}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                          tableData && tableData.length > 0 && tableData.map(elem => (
-                            <tr key={uuid_v4()}>
-                              <td style={{whiteSpace:'nowrap'}} >
-                                <input type="checkbox" className="messageCheckbox" 
-                                name="mintData" onChange={checkboxBurnValue} /></td>
-                              <td style={{whiteSpace:'nowrap'}}>{elem.id}</td>
-                              <td style={{whiteSpace:'nowrap'}}>{elem.name}</td>
-                              <td style={{whiteSpace:'nowrap'}}>{elem.description}</td>
-                              <td style={{whiteSpace:'nowrap'}} >{elem.serielNo}</td>
-                              {/* <td> <button type="button" style={{float:'right', marginTop:'10px', whiteSpace:'nowrap'}} className="btn btn-primary" onClick={(e) => showModal(e)} >Show Detail</button> </td> */}
-                            </tr>
-                          ))
-                      }
-                    </tbody>
-                    </Table>
-                  <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit" onClick={burnAProduct}  >Burn a Product</Button>
-                </div>
-              </div>
-              <div id="test-l-4" className="content text-center">
-                In Progress
+                <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="button" onClick={addChildParent} >Add as a Child</Button>
               </div>
           </div>
         </div>

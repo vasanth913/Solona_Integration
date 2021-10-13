@@ -11,15 +11,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import EstablishPayer from './establishPayer';
 import { useHistory } from "react-router-dom";
 
-const EstablishConnection = ({userNameData, mintData}) => {
+const EstablishConnection = ({ mintData}) => {
 
   
 
   const [connectionUrl, setConnection] = useState <any> (false);
 
+  console.log('mintAProduct5 ****');
   
+  console.log('mintAProduct6 ****', mintData);
 
   useEffect(() => {
+
+    console.log('mintAProduct7 ****');
 
     /**
    * Connection to the network

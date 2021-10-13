@@ -7,7 +7,10 @@ const inititalState = {
     burnComponentData: [],
     mintComponentFlag: false,
     mintProductFlag: false,
-    burnProductFlag: false
+    burnProductFlag: false,
+    addAsAChildValue:[],
+    addAsAChildButton: false,
+    burnResponseData:[]
 }
 
 export const mintReducer = (state = inititalState, {type, payload}) => {
@@ -24,6 +27,7 @@ export const mintReducer = (state = inititalState, {type, payload}) => {
                 mintResponse : payload
             };
         case actionTypes.MINT_PRODUCTS_DATA:
+            console.log('mintAProduct3 ****');
             return {
                 ...state, 
                 mintProductDataValues : payload
@@ -52,6 +56,21 @@ export const mintReducer = (state = inititalState, {type, payload}) => {
             return {
                 ...state, 
                 checkBoxValue : payload
+            };
+        case actionTypes.ADD_AS_A_CHILD:
+            return {
+                ...state, 
+                addAsAChildValue : payload
+            };
+        case actionTypes.ADD_AS_A_CHILD_BUTTON:
+            return {
+                ...state, 
+                addAsAChildButton : payload
+            };
+        case actionTypes.BURN_RESPONSE_DATA:
+            return {
+                ...state, 
+                burnResponseData : payload
             };
         default:
             return state;
