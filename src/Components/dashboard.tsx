@@ -321,15 +321,14 @@ import NavbarComp from '../Components/navbarComp';
                 <div className="form-group">
                   <Form key={1} onSubmit={handleSubmit(onSubmit)}>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
-                        <Form.Label column sm={2}>
+                        <Form.Label visuallyHidden column sm={2}>
                           Id
                         </Form.Label>
-                        <Form.Control defaultValue={componentValue} {...register("componentid", {
+                        <Form.Control  style={{display: 'none' }} defaultValue={componentValue} {...register("componentid", {
                           required: true,
                           minLength: 1,
                           maxLength: 255,
-                        })} 
-                        type="text" placeholder="Enter Component Id" />
+                        })} placeholder="Enter Component Id" />
                          {errors.componentid?.type === 'required' && "Id is required"}
                          {errors.componentid && errors.componentid.type === "minLength" && <span>Min length should be 1</span> }
                          {errors.componentid && errors.componentid.type === "maxLength" && <span>Max length should be 255</span> }
@@ -436,10 +435,10 @@ import NavbarComp from '../Components/navbarComp';
                   </div>
                   <Form key={2} onSubmit={handleSubmit2(getSelected)}>
                   <Form.Group className="mb-3" controlId="formHorizontalEmail">
-                        <Form.Label column sm={2}>
+                        <Form.Label visuallyHidden column sm={2}>
                           Id
                         </Form.Label>
-                        <Form.Control  defaultValue={componentValue} {...register2("componentid", {
+                        <Form.Control style={{display:'none'}} defaultValue={componentValue} {...register2("componentid", {
                           required: true,
                           minLength: 1,
                           maxLength: 255,
@@ -653,10 +652,10 @@ import NavbarComp from '../Components/navbarComp';
                   </div>
                   <Form key={2} onSubmit={handleSubmit3(mintReProduceProduct)}>
                   <Form.Group className="mb-3" controlId="formHorizontalEmail">
-                        <Form.Label column sm={2}>
+                        <Form.Label visuallyHidden column sm={2}>
                           Id
                         </Form.Label>
-                        <Form.Control defaultValue={componentValue} {...register3("componentid", {
+                        <Form.Control style={{display:'none'}} defaultValue={componentValue} {...register3("componentid", {
                           required: true,
                           minLength: 1,
                           maxLength: 255,
@@ -705,6 +704,7 @@ import NavbarComp from '../Components/navbarComp';
                       <br />
                       <br />
                       <div>
+                      <br />
                       <br />
                       <Accordion>
                       <Accordion.Item eventKey="0">
