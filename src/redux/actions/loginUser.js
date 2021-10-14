@@ -9,7 +9,7 @@ export const loginUser = (username) =>
 export const mintComponentsData = (mintData, mintComponent, mintDataValues) => 
     async (dispatch) => {
       let showData = {};
-      console.log('mintDataValues ***', mintData, mintComponent);
+      console.log('mint Component 2 ***');
       let formData = [];
       showData.id = mintData.componentid;
       showData.description = mintData.description;

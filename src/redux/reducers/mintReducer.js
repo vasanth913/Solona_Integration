@@ -19,6 +19,7 @@ export const mintReducer = (state = inititalState, {type, payload}) => {
 
     switch (type){
         case actionTypes.MINT_COMPONENTS_DATA:
+            console.log('mint Component 3 ***');
             return {
                 ...state, 
                 mintDataValues : payload

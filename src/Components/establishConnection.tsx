@@ -16,14 +16,12 @@ const EstablishConnection = ({ mintData}) => {
   
 
   const [connectionUrl, setConnection] = useState <any> (false);
-
-  console.log('mintAProduct5 ****');
   
-  console.log('mintAProduct6 ****', mintData);
+  console.log('mintAProduct5 ****', mintData);
 
   useEffect(() => {
 
-    console.log('mintAProduct7 ****');
+    console.log('mintAProduct6 ****');
 
     /**
    * Connection to the network

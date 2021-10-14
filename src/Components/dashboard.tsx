@@ -85,9 +85,10 @@ import NavbarComp from '../Components/navbarComp';
 
 
     const onSubmit = (data) => {
-      dispatch(mintComponent(true));
-      dispatch(mintProduct(false));
-      dispatch(burnProduct(false));
+      console.log('mint Component 1 ***');
+      // dispatch(mintComponent(true));
+      // dispatch(mintProduct(false));
+      // dispatch(burnProduct(false));
       //setComponentValue (Math.floor(Math.random() * (255 - 1) + 1));
       // data['componentid'] = JSON.stringify(Math.floor(Math.random() * (255 - 1) + 1));
       dispatch(mintComponentsData(data,"mintComponent", mintData));

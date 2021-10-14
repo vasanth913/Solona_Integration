@@ -219,6 +219,14 @@ checkProgram();
       }),
     );
     await sendAndConfirmTransaction(connectionUrl, transaction, [payerUrl]);
+    } else {
+      console.log(
+        'account already created',
+        qcom.toBase58(),
+        'to store component',
+        'with storage size: ',
+        COMPONENT_SIZE
+      );
     }
   
     // Derive the address (public key) of a greeting account from the program so that it's easy to find later.
@@ -269,10 +277,10 @@ checkProgram();
     }
 
     setQCOM(qcom.toBase58());
-    setNvd(nvd.toBase58());
+    //setNvd(nvd.toBase58());
   
     console.log("Component Qcom PDA: ", qcom.toBase58());
-    console.log("Component Nvd PDA: ", nvd.toBase58());
+    //console.log("Component Nvd PDA: ", nvd.toBase58());
     if(burnComponentData && burnComponentData[0] === "BurnAProduct"){
       burnQcom();
     } else {
@@ -657,7 +665,7 @@ async function reportComponentNvd(): Promise<void> {
 }
 
 
-  },[connectionUrl,payerUrl]);
+  },[payerUrl]);
 
   return (
     <>

@@ -27,6 +27,8 @@ const NavbarComp = () => {
 
     const mintProductProductDataValues = useSelector((state: RootState) => state.mintReducer.mintProductProductDataValues);
 
+    console.log('mint Component 4 ***');
+
     const logout = () => {
        window.location.href = '/';
     }
@@ -53,7 +55,7 @@ const NavbarComp = () => {
             CompanyName: "Indigo Commercial Bank."
         }]
 
-    console.log('userObj', userObj);
+
     return (
       <>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
