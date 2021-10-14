@@ -23,8 +23,6 @@ const NavbarComp = () => {
     const addAsAChildReproduceValue = useSelector((state: RootState) => state.mintReducer.addAsAChildReproduceValue);
 
     const mintProductProductDataValues = useSelector((state: RootState) => state.mintReducer.mintProductProductDataValues);
-    
-    console.log('addAsAChildReproduceValue ****', addAsAChildReproduceValue);
 
 
     return(

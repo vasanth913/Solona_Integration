@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import Stepper from 'bs-stepper';
-import {  Button, Modal, Form , Table, Tabs, Tab } from 'react-bootstrap';
+import {  Button, Modal, Form , Table, Accordion} from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import {mintComponentsData, mintProductComponentsData, mintComponent, mintProduct, burnProduct, burnComponentData, addAsAChild ,addAsAChild1, mintReproduceProductComponentsData} from '../redux/actions/loginUser';
 import { useDispatch, useSelector} from "react-redux";
@@ -38,6 +38,7 @@ import {v4 as uuid_v4} from 'uuid';
     const {
       register,
       handleSubmit,
+      setError,
       reset,
       formState: { errors }
     } = useForm();
@@ -419,24 +420,33 @@ import {v4 as uuid_v4} from 'uuid';
                           required: true,
                           minLength: 1,
                           maxLength: 255,
-                        })} type="text" placeholder="Enter Component ID" />
+                        })} 
+                        type="text" placeholder="Enter Component ID" />
+                         {errors.componentid?.type === 'required' && "Id is required"}
+                         {errors.componentid && errors.componentid.type === "minLength" && <span>Min length should be 1</span> }
+                         {errors.componentid && errors.componentid.type === "maxLength" && <span>Max length should be 255</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
                           Description 
                         </Form.Label>
                         <Form.Control {...register("description", {
+                          required: true,
+                          minLength: 10,
+                          maxLength: 64
                         })} type="text" placeholder="Enter Description" />
+                        {errors.description?.type === 'required' && "Description is required"}
+                         {errors.description && errors.description.type === "minLength" && <span>Min length should be 10</span> }
+                         {errors.description && errors.description.type === "maxLength" && <span>Max length should be 64</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
                           Name
                         </Form.Label>
-                        <Form.Control {...register("name", {
-                          required: true,
-                          minLength: 5,
-                          maxLength: 16,
-                        })} type="text" placeholder="Enter the Name" />
+                        <Form.Control  {...register('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter the Name" />
+                        {errors.name?.type === 'required' && "name is required"}
+                        {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
+                        {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
@@ -447,6 +457,9 @@ import {v4 as uuid_v4} from 'uuid';
                           minLength: 5,
                           maxLength: 16,
                         })} type="text" placeholder="Enter the Serial No" />
+                          {errors.serielNo?.type === 'required' && "Serial Number is required"}
+                         {errors.serielNo && errors.serielNo.type === "minLength" && <span>Min length should be 5</span> }
+                         {errors.serielNo && errors.serielNo.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit" >Mint Component</Button>
                       <br /> 
@@ -512,32 +525,41 @@ import {v4 as uuid_v4} from 'uuid';
                       </div>
                   </div>
                   <Form key={2} onSubmit={handleSubmit2(getSelected)}>
-                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                  <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
-                          Component ID
+                          Id
                         </Form.Label>
                         <Form.Control {...register2("componentid", {
                           required: true,
                           minLength: 1,
                           maxLength: 255,
-                        })} type="text" placeholder="Enter Component ID" />
+                        })} 
+                        type="text" placeholder="Enter Component ID" />
+                         {errors.componentid?.type === 'required' && "Id is required"}
+                         {errors.componentid && errors.componentid.type === "minLength" && <span>Min length should be 1</span> }
+                         {errors.componentid && errors.componentid.type === "maxLength" && <span>Max length should be 255</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
                           Description 
                         </Form.Label>
                         <Form.Control {...register2("description", {
+                          required: true,
+                          minLength: 10,
+                          maxLength: 64
                         })} type="text" placeholder="Enter Description" />
+                        {errors.description?.type === 'required' && "Description is required"}
+                         {errors.description && errors.description.type === "minLength" && <span>Min length should be 10</span> }
+                         {errors.description && errors.description.type === "maxLength" && <span>Max length should be 64</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
                           Name
                         </Form.Label>
-                        <Form.Control {...register2("name", {
-                          required: true,
-                          minLength: 5,
-                          maxLength: 16,
-                        })} type="text" placeholder="Enter the Name" />
+                        <Form.Control  {...register2('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter the Name" />
+                        {errors.name?.type === 'required' && "name is required"}
+                        {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
+                        {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
@@ -548,11 +570,18 @@ import {v4 as uuid_v4} from 'uuid';
                           minLength: 5,
                           maxLength: 16,
                         })} type="text" placeholder="Enter the Serial No" />
+                          {errors.serielNo?.type === 'required' && "Serial Number is required"}
+                         {errors.serielNo && errors.serielNo.type === "minLength" && <span>Min length should be 5</span> }
+                         {errors.serielNo && errors.serielNo.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  >Mint Product</Button>
                       <br />
                       <br />
-                      <div>
+                      <Accordion>
+                        <Accordion.Item eventKey="0">
+                          <Accordion.Header>Add as a Child</Accordion.Header>
+                          <Accordion.Body>
+                          <div>
                         <select onChange={(event)=> serielDropdown(event)} className="form-control" aria-label="Default select example">
                           <option>Select Item to add to product</option>
                           {
@@ -603,10 +632,22 @@ import {v4 as uuid_v4} from 'uuid';
                                   </tbody>
                           </Table>
                           }
-                        </div>
+                          </div>
+                          <br />
+                          <div>
+                            <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  onClick={addChildParent} >Add as a Child</Button>
+                            <br />
+                          </div>
+                          <br />
+                          </Accordion.Body>
+                        </Accordion.Item>
+                        
+                      </Accordion>
+                      
                     </Form>  
                 </div>
-                <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  onClick={addChildParent} >Add as a Child</Button>
+                <br />
+                
               </div>
               <div id="test-l-3" className="content">
                 <div className="form-group">
@@ -620,6 +661,10 @@ import {v4 as uuid_v4} from 'uuid';
                   }
                 </select>
                 <br />
+                <Accordion>
+                  <Accordion.Item eventKey="0">
+                    <Accordion.Header>Burn Product</Accordion.Header>
+                    <Accordion.Body>
                 <Table striped bordered hover variant="light" id="Table2">
                     <thead>
                       <tr>
@@ -656,7 +701,15 @@ import {v4 as uuid_v4} from 'uuid';
                                     }
                       </tbody>
                     </Table>
-                  <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit" onClick={burnAProduct}  >Burn Product</Button>
+                    <br />
+                      <div>
+                          <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit" onClick={burnAProduct}  >Burn Product</Button>
+                          <br />
+                      </div>
+                      <br />
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
                 </div>
               </div>
               <div id="test-l-4" className="content">
@@ -707,7 +760,7 @@ import {v4 as uuid_v4} from 'uuid';
                       </div>
                   </div>
                   <Form key={2} onSubmit={handleSubmit3(mintReProduceProduct)}>
-                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                  <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
                           Id
                         </Form.Label>
@@ -715,24 +768,33 @@ import {v4 as uuid_v4} from 'uuid';
                           required: true,
                           minLength: 1,
                           maxLength: 255,
-                        })} type="text" placeholder="Enter Component ID" />
+                        })} 
+                        type="text" placeholder="Enter Component ID" />
+                         {errors.componentid?.type === 'required' && "Id is required"}
+                         {errors.componentid && errors.componentid.type === "minLength" && <span>Min length should be 1</span> }
+                         {errors.componentid && errors.componentid.type === "maxLength" && <span>Max length should be 255</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
                           Description 
                         </Form.Label>
                         <Form.Control {...register3("description", {
+                          required: true,
+                          minLength: 10,
+                          maxLength: 64
                         })} type="text" placeholder="Enter Description" />
+                        {errors.description?.type === 'required' && "Description is required"}
+                         {errors.description && errors.description.type === "minLength" && <span>Min length should be 10</span> }
+                         {errors.description && errors.description.type === "maxLength" && <span>Max length should be 64</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
                           Name
                         </Form.Label>
-                        <Form.Control {...register3("name", {
-                          required: true,
-                          minLength: 5,
-                          maxLength: 16,
-                        })} type="text" placeholder="Enter the Name" />
+                        <Form.Control  {...register3('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter the Name" />
+                        {errors.name?.type === 'required' && "name is required"}
+                        {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
+                        {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
@@ -743,10 +805,17 @@ import {v4 as uuid_v4} from 'uuid';
                           minLength: 5,
                           maxLength: 16,
                         })} type="text" placeholder="Enter the Serial No" />
+                          {errors.serielNo?.type === 'required' && "Serial Number is required"}
+                         {errors.serielNo && errors.serielNo.type === "minLength" && <span>Min length should be 5</span> }
+                         {errors.serielNo && errors.serielNo.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit">Mint Product</Button>
                       <br />
                       <br />
+                      <Accordion>
+                      <Accordion.Item eventKey="0">
+                        <Accordion.Header>Add as a Child</Accordion.Header>
+                        <Accordion.Body>
                       <div>
                         <select onChange={(event)=> serielDropdown1(event)} className="form-control" aria-label="Default select example">
                           <option>Select Item to add to product</option>
@@ -800,9 +869,17 @@ import {v4 as uuid_v4} from 'uuid';
                           </Table>
                           }
                         </div>
+                        <br />
+                        <div>
+                          <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="button" onClick={addChildParent1} >Add as a Child</Button>
+                        </div>
+                        <br />
+                        <br />
+                        </Accordion.Body>
+                        </Accordion.Item>
+                      </Accordion>
                     </Form>  
                 </div>
-                <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="button" onClick={addChildParent1} >Add as a Child</Button>
               </div>
           </div>
         </div>
