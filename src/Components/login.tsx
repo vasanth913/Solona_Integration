@@ -54,10 +54,11 @@ const Login = () => {
                     <Button variant="primary" onClick={login}>Login</Button>
                 </div>
             </form>
-            {/* <br />
-            <div>
+            <br />
+            {/* <div>
               <select  onChange={(event)=> roleDropdown(event)} value={role} aria-label="Default select example">
                   <option value="Select Role">Select Role</option>
+                  <option value="Admin">Admin</option>
                   <option value="Manufacturer">Manufacturer</option>
                </select>
            </div> */}

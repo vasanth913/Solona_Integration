@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import Stepper from 'bs-stepper';
-import {  Button, Modal, Form , Table, Accordion} from 'react-bootstrap';
+import {  Button, Modal, Form , Table, Accordion, Tabs, Tab} from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import {mintComponentsData, mintProductComponentsData, mintComponent, mintProduct, burnProduct, burnComponentData, addAsAChild ,addAsAChild1, mintReproduceProductComponentsData} from '../redux/actions/loginUser';
 import { useDispatch, useSelector} from "react-redux";
@@ -23,13 +23,11 @@ import { isJsxElement } from "typescript";
     const [addChildButton, setAddChildButton] = useState(true);
     const roleChange = useSelector((state: RootState) => state.loginReducer.roleChange);
 
-    const [key, setKey] = useState('profile');
-
-    const [roleStateChange, setRoleChange] = useState(false);
+    const [roleStateChange, setRoleChange] = useState('home');
 
     useEffect(() => {
       if(roleChange === "Manufacturer"){
-        setRoleChange(true)
+        setRoleChange('profile')
       }
     },[roleChange])
 
@@ -63,6 +61,7 @@ import { isJsxElement } from "typescript";
     const addAsAChildButton = useSelector((state: RootState) => state.mintReducer.addAsAChildButton);
 
     const burnResponseData = useSelector((state: RootState) => state.mintReducer.burnResponseData);
+
 
     const onSubmit = (data) => {
       dispatch(mintComponent(true));
@@ -218,169 +217,46 @@ import { isJsxElement } from "typescript";
       })
     },[])
 
-    const checkboxValue = () => {
-          //Reference the Table.
-          const cb = document.getElementById('myCheck');
-          // @ts-expect-error: Let's ignore a compile error like this unreachable code
-          console.log(cb.checked)
-          var grid = document.getElementById("Table1");
-
-          //Reference the CheckBoxes in Table.
-          var checkBoxes = grid.getElementsByTagName("INPUT");
-          var message = "";
-          var pushValue = [];
-        //   for (var i = 0; i < checkBoxes.length; i++) {
-        //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-        //     if (checkBoxes[i].checked) {
-        //         var row = checkBoxes[i].parentNode.parentNode;
-        //         // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-        //         message += row.cells[1].innerHTML;
-        //         message += "\n";
-        //     }
-        // }
- 
-        // //Display selected Row data in Alert Box.
-        // alert(message);
-          //Loop through the CheckBoxes.
-          for (var i = 0; i < checkBoxes.length; i++) {
-            // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-              if (checkBoxes[i].checked) {
-                  var row = checkBoxes[i].parentNode.parentNode;
-                  // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-                  message += row.cells[1].innerHTML;
-              //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-              //     message += "   " + row.cells[2].innerHTML;
-              //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-              //     message += "   " + row.cells[3].innerHTML;
-              //     message += "\n";
-              console.log('message ***', message);
-              setCheckboxValue(message);
-              //pushValue.push(message);
-              
-              // if(pushValue[0].length > 1) {
-              //   setCheckboxValue(pushValue[0].split(","));
-              // } else {
-              //   setCheckboxValue(pushValue[0]);
-              // }
-               }
-          }      
-    }
-
-    const checkboxValue1 = () => {
-      //Reference the Table.
-      var grid = document.getElementById("Table3");
-
-      //Reference the CheckBoxes in Table.
-      var checkBoxes = grid.getElementsByTagName("INPUT");
-      var message = "";
-      var pushValue = [];
-    //   for (var i = 0; i < checkBoxes.length; i++) {
-    //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-    //     if (checkBoxes[i].checked) {
-    //         var row = checkBoxes[i].parentNode.parentNode;
-    //         // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-    //         message += row.cells[1].innerHTML;
-    //         message += "\n";
-    //     }
-    // }
-
-    // //Display selected Row data in Alert Box.
-    // alert(message);
-      //Loop through the CheckBoxes.
-      for (var i = 0; i < checkBoxes.length; i++) {
-        // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-          if (checkBoxes[i].checked) {
-              var row = checkBoxes[i].parentNode.parentNode;
-              // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-              message += row.cells[1].innerHTML;
-          //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-          //     message += "   " + row.cells[2].innerHTML;
-          //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-          //     message += "   " + row.cells[3].innerHTML;
-          //     message += "\n";
-          console.log('message ***', message);
-          setCheckboxValue1(message);
-          //pushValue.push(message);
-          
-          // if(pushValue[0].length > 1) {
-          //   setCheckboxValue(pushValue[0].split(","));
-          // } else {
-          //   setCheckboxValue(pushValue[0]);
-          // }
-           }
-      }      
-}
-
-  const checkboxBurnValue = () => {
-      //Reference the Table.
-      var grid = document.getElementById("Table2");
-
-      //Reference the CheckBoxes in Table.
-      var checkBoxes = grid.getElementsByTagName("INPUT");
-      var message = "";
-      var pushValue = [];
-      //Loop through the CheckBoxes.
-      for (var i = 0; i < checkBoxes.length; i++) {
-        // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-          if (checkBoxes[i].checked) {
-              var row = checkBoxes[i].parentNode.parentNode;
-              // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-              message += row.cells[1].innerHTML;
-          //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-          //     message += "   " + row.cells[2].innerHTML;
-          //     // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-          //     message += "   " + row.cells[3].innerHTML;
-          //     message += "\n";
-          // pushValue.push(message);
-          setCheckboxBurnValue(message);
-
-          // if(pushValue[0].length > 1) {
-          //   setCheckboxBurnValue(pushValue[0].split(","));
-          // } else {
-          //   setCheckboxBurnValue(pushValue[0]);
-          // }
-           }
-      }      
-}
-
-    
-
     const getSelected = (data) => {
-
-      // dispatch(mintComponent(false));
-      // dispatch(mintProduct(true));
-      // dispatch(burnProduct(false));
       dispatch(mintProductComponentsData(data,"mintAProduct"));
     }
 
     const mintReProduceProduct = (data) => {
-
-      // dispatch(mintComponent(false));
-      // dispatch(mintProduct(true));
-      // dispatch(burnProduct(false));
       dispatch(mintReproduceProductComponentsData(data,"mintAReproduceProduct"));
     }
 
     const addChildParent = () => {
-      console.log('addChildParent Button');
-      dispatch(addAsAChild("addAsAChild", checkboxValueRetrive));
+      dispatch(addAsAChild("addAsAChild", searchDropDownText));
     }
 
     const addChildParent1 = () => {
-      console.log('addChildParent Button1');
-      dispatch(addAsAChild1("addAsAChildReProduce", checkboxValueRetrive1));
+      dispatch(addAsAChild1("addAsAChildReProduce", searchDropDownText));
     }
 
     const burnAProduct = () => {
-      // dispatch(mintComponent(false));
-      // dispatch(mintProduct(false));
-      // dispatch(burnProduct(true));
-      dispatch(burnComponentData("BurnAProduct", checkboxValueBurnRetrive));
+      dispatch(burnComponentData("BurnAProduct", searchDropDownText));
 
     }; 
 
+
   return (
     <div>
+      {/* <Tabs
+      id="controlled-tab-example"
+      activeKey={roleStateChange}
+      onSelect={(k) => setRoleChange(k)}
+      className="mb-3"
+    >
+            <Tab eventKey="home" title="Home">
+              Home
+            </Tab>
+            <Tab eventKey="profile" title="Profile">
+              Profile
+            </Tab>
+            <Tab eventKey="contact" title="Contact">
+              Contact
+            </Tab>
+        </Tabs> */}
         <div id="stepper1" className="bs-stepper">
           <div className="bs-stepper-header">
             <div className="step"  data-target="#test-l-1">
@@ -390,7 +266,7 @@ import { isJsxElement } from "typescript";
               </button>
             </div>
             <div className="line"></div>
-            <div className="step" data-target="#test-l-2">
+            <div className="step" id="step2" data-target="#test-l-2">
               <button className="step-trigger"  >
                 <span className="bs-stepper-circle">2</span>
                 <span className="bs-stepper-label">Manufacture Product</span>
@@ -602,20 +478,18 @@ import { isJsxElement } from "typescript";
                       {
                       <Table striped bordered hover variant="light" id="Table1">
                                   <thead>
-                                    <tr>
-                                      <th></th>
+                                    <tr> 
                                       <th>Id</th>
                                       <th>Name</th>
                                       <th>Description</th>
                                       <th>Serial Number</th>
-                                      {/* <th></th> */}
                                     </tr>
                                   </thead>
                                   <tbody>
                                     {
                                        
                                          <tr key={uuid_v4()}>
-                                            <td style={{whiteSpace:'nowrap'}} >
+                                            {/* <td style={{whiteSpace:'nowrap'}} >
                                               {
                                                 tableData && Object.keys(tableData).length > 1 ?
                                                 <input type="checkbox" className="messageCheckbox" id="myCheck"
@@ -623,7 +497,7 @@ import { isJsxElement } from "typescript";
                                                  />
                                                 : ''
                                               }
-                                             </td>
+                                             </td> */}
                                             {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
                                             <td style={{whiteSpace:'nowrap'}}>{tableData && tableData.id}</td>
                                              {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
@@ -671,7 +545,6 @@ import { isJsxElement } from "typescript";
                 <Table striped bordered hover variant="light" id="Table2">
                     <thead>
                       <tr>
-                        <th></th>
                         <th>Id</th>
                         <th>Name</th>
                         <th>Description</th>
@@ -682,14 +555,6 @@ import { isJsxElement } from "typescript";
                     <tbody>
                                     {
                                          <tr key={uuid_v4()}>
-                                            <td style={{whiteSpace:'nowrap'}} >
-                                            {
-                                                tableData && Object.keys(tableData).length > 1 ?
-                                                <input type="checkbox" className="messageCheckbox" 
-                                                 name="mintData" onChange={checkboxBurnValue} />
-                                                : ''
-                                              }
-                                             </td>
                                             {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
                                             <td style={{whiteSpace:'nowrap'}}>{tableData && tableData.id}</td>
                                              {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
@@ -833,7 +698,6 @@ import { isJsxElement } from "typescript";
                       <Table striped bordered hover variant="light" id="Table3">
                                   <thead>
                                     <tr>
-                                      <th></th>
                                       <th>Id</th>
                                       <th>Name</th>
                                       <th>Description</th>
@@ -845,14 +709,6 @@ import { isJsxElement } from "typescript";
                                     {
                                      
                                          <tr key={uuid_v4()}>
-                                            <td style={{whiteSpace:'nowrap'}} >
-                                            {
-                                                tableData1 && Object.keys(tableData1).length > 1 ?
-                                                <input type="checkbox" className="messageCheckbox"
-                                              name="mintData" onChange={checkboxValue1} />
-                                                : ''
-                                            }
-                                            </td>
                                             {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
                                             <td style={{whiteSpace:'nowrap'}}>{tableData1 && tableData1.id}</td>
                                              {/* @ts-expect-error: Let's ignore a compile error like this unreachable code */}
