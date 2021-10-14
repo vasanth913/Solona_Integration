@@ -21,7 +21,7 @@ import NavbarComp from '../Components/navbarComp';
     const [tableData1, setTableData1] = useState([]);
     const [searchDropDownText, setDropDownText] = useState();
     const [dropDownData, setDropDownData] = useState([]);
-    //const [componentValue, setComponentValue] = useState(Math.floor(Math.random() * (255 - 1) + 1));
+    const [componentValue, setComponentValue] = useState(Math.floor(Math.random() * (255 - 1) + 1));
     const [addChildButton, setAddChildButton] = useState(true);
     const roleChange = useSelector((state: RootState) => state.loginReducer.roleChange);
 
@@ -89,8 +89,8 @@ import NavbarComp from '../Components/navbarComp';
       // dispatch(mintComponent(true));
       // dispatch(mintProduct(false));
       // dispatch(burnProduct(false));
-      //setComponentValue (Math.floor(Math.random() * (255 - 1) + 1));
-      // data['componentid'] = JSON.stringify(Math.floor(Math.random() * (255 - 1) + 1));
+      setComponentValue (Math.floor(Math.random() * (255 - 1) + 1));
+      data['componentid'] = JSON.stringify(Math.floor(Math.random() * (255 - 1) + 1));
       dispatch(mintComponentsData(data,"mintComponent", mintData));
 
     }; // your form submit function which will invoke after successful validation
@@ -234,10 +234,14 @@ import NavbarComp from '../Components/navbarComp';
     }
 
     const getSelected = (data) => {
+      setComponentValue (Math.floor(Math.random() * (255 - 1) + 1));
+      data['componentid'] = JSON.stringify(Math.floor(Math.random() * (255 - 1) + 1));
       dispatch(mintProductComponentsData(data,"mintAProduct"));
     }
 
     const mintReProduceProduct = (data) => {
+      setComponentValue (Math.floor(Math.random() * (255 - 1) + 1));
+      data['componentid'] = JSON.stringify(Math.floor(Math.random() * (255 - 1) + 1));
       dispatch(mintReproduceProductComponentsData(data,"mintAReproduceProduct"));
     }
 
@@ -320,7 +324,7 @@ import NavbarComp from '../Components/navbarComp';
                         <Form.Label column sm={2}>
                           Id
                         </Form.Label>
-                        <Form.Control {...register("componentid", {
+                        <Form.Control defaultValue={componentValue} {...register("componentid", {
                           required: true,
                           minLength: 1,
                           maxLength: 255,
@@ -435,7 +439,7 @@ import NavbarComp from '../Components/navbarComp';
                         <Form.Label column sm={2}>
                           Id
                         </Form.Label>
-                        <Form.Control  {...register2("componentid", {
+                        <Form.Control  defaultValue={componentValue} {...register2("componentid", {
                           required: true,
                           minLength: 1,
                           maxLength: 255,
@@ -483,7 +487,7 @@ import NavbarComp from '../Components/navbarComp';
                       <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  >Mint Product</Button>
                       <br />
                       <br />
-                      <br />
+                    <div>
                       <Accordion>
                         <Accordion.Item eventKey="0">
                           <Accordion.Header>Add Component to Product</Accordion.Header>
@@ -539,21 +543,18 @@ import NavbarComp from '../Components/navbarComp';
                           </Table>
                           }
                           </div>
-                          <br />
-                          <div>
-                            <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  onClick={addChildParent} >Add as a Child</Button>
-                            <br />
-                          </div>
-                          <br />
                           </Accordion.Body>
                         </Accordion.Item>
-                        
                       </Accordion>
-                      
+                    </div>
                     </Form>  
+                    <br />
+                    <div>
+                        <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  onClick={addChildParent} >Add as a Child</Button>
+                    </div>
+                    <br />
+                    <br />
                 </div>
-                <br />
-                
               </div>
               <div id="test-l-3" className="content">
                 <div className="form-group">
@@ -655,7 +656,7 @@ import NavbarComp from '../Components/navbarComp';
                         <Form.Label column sm={2}>
                           Id
                         </Form.Label>
-                        <Form.Control  {...register3("componentid", {
+                        <Form.Control defaultValue={componentValue} {...register3("componentid", {
                           required: true,
                           minLength: 1,
                           maxLength: 255,
@@ -702,6 +703,8 @@ import NavbarComp from '../Components/navbarComp';
                       </Form.Group>
                       <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit">Mint Product</Button>
                       <br />
+                      <br />
+                      <div>
                       <br />
                       <Accordion>
                       <Accordion.Item eventKey="0">
@@ -751,16 +754,16 @@ import NavbarComp from '../Components/navbarComp';
                           </Table>
                           }
                         </div>
-                        <br />
-                        <div>
-                          <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="button" onClick={addChildParent1} >Add as a Child</Button>
-                        </div>
-                        <br />
-                        <br />
                         </Accordion.Body>
                         </Accordion.Item>
                       </Accordion>
+                     </div>
                     </Form>  
+                    <br />
+                    <div>
+                      <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="button" onClick={addChildParent1} >Add as a Child</Button>
+                    </div>
+                    <br />
                 </div>
               </div>
           </div>
