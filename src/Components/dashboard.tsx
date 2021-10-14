@@ -8,6 +8,7 @@ import {mintComponentsData, mintProductComponentsData, mintComponent, mintProduc
 import { useDispatch, useSelector} from "react-redux";
 import type { RootState } from '../redux/store';
 import {v4 as uuid_v4} from 'uuid';
+import { isJsxElement } from "typescript";
 
  export const Dashboard = () => {
     const [show, setShow] = useState(false);
@@ -219,6 +220,9 @@ import {v4 as uuid_v4} from 'uuid';
 
     const checkboxValue = () => {
           //Reference the Table.
+          const cb = document.getElementById('myCheck');
+          // @ts-expect-error: Let's ignore a compile error like this unreachable code
+          console.log(cb.checked)
           var grid = document.getElementById("Table1");
 
           //Reference the CheckBoxes in Table.
@@ -343,7 +347,6 @@ import {v4 as uuid_v4} from 'uuid';
 
     const getSelected = (data) => {
 
-      console.log('mintAProduct1 ****');
       // dispatch(mintComponent(false));
       // dispatch(mintProduct(true));
       // dispatch(burnProduct(false));
@@ -421,7 +424,7 @@ import {v4 as uuid_v4} from 'uuid';
                           minLength: 1,
                           maxLength: 255,
                         })} 
-                        type="text" placeholder="Enter Component ID" />
+                        type="text" placeholder="Enter Component Id" />
                          {errors.componentid?.type === 'required' && "Id is required"}
                          {errors.componentid && errors.componentid.type === "minLength" && <span>Min length should be 1</span> }
                          {errors.componentid && errors.componentid.type === "maxLength" && <span>Max length should be 255</span> }
@@ -443,7 +446,7 @@ import {v4 as uuid_v4} from 'uuid';
                         <Form.Label column sm={2}>
                           Name
                         </Form.Label>
-                        <Form.Control  {...register('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter the Name" />
+                        <Form.Control  {...register('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter Name" />
                         {errors.name?.type === 'required' && "name is required"}
                         {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
                         {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
@@ -456,13 +459,15 @@ import {v4 as uuid_v4} from 'uuid';
                           required: true,
                           minLength: 5,
                           maxLength: 16,
-                        })} type="text" placeholder="Enter the Serial No" />
+                        })} type="text" placeholder="Enter Serial Number" />
                           {errors.serielNo?.type === 'required' && "Serial Number is required"}
                          {errors.serielNo && errors.serielNo.type === "minLength" && <span>Min length should be 5</span> }
                          {errors.serielNo && errors.serielNo.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit" >Mint Component</Button>
                       <br /> 
+                      <br /> 
+
                         <div className="form-group">
                          <label htmlFor="exampleFormControlTextarea1">
                           Response from Solana blockchain 
@@ -534,7 +539,7 @@ import {v4 as uuid_v4} from 'uuid';
                           minLength: 1,
                           maxLength: 255,
                         })} 
-                        type="text" placeholder="Enter Component ID" />
+                        type="text" placeholder="Enter Product Id" />
                          {errors.componentid?.type === 'required' && "Id is required"}
                          {errors.componentid && errors.componentid.type === "minLength" && <span>Min length should be 1</span> }
                          {errors.componentid && errors.componentid.type === "maxLength" && <span>Max length should be 255</span> }
@@ -556,7 +561,7 @@ import {v4 as uuid_v4} from 'uuid';
                         <Form.Label column sm={2}>
                           Name
                         </Form.Label>
-                        <Form.Control  {...register2('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter the Name" />
+                        <Form.Control  {...register2('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter Name" />
                         {errors.name?.type === 'required' && "name is required"}
                         {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
                         {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
@@ -569,7 +574,7 @@ import {v4 as uuid_v4} from 'uuid';
                           required: true,
                           minLength: 5,
                           maxLength: 16,
-                        })} type="text" placeholder="Enter the Serial No" />
+                        })} type="text" placeholder="Enter Serial Number" />
                           {errors.serielNo?.type === 'required' && "Serial Number is required"}
                          {errors.serielNo && errors.serielNo.type === "minLength" && <span>Min length should be 5</span> }
                          {errors.serielNo && errors.serielNo.type === "maxLength" && <span>Max length should be 16</span> }
@@ -579,14 +584,14 @@ import {v4 as uuid_v4} from 'uuid';
                       <br />
                       <Accordion>
                         <Accordion.Item eventKey="0">
-                          <Accordion.Header>Add as a Child</Accordion.Header>
+                          <Accordion.Header>Add Component to Product</Accordion.Header>
                           <Accordion.Body>
                           <div>
-                        <select onChange={(event)=> serielDropdown(event)} className="form-control" aria-label="Default select example">
-                          <option>Select Item to add to product</option>
+                        <select onChange={(event)=> serielDropdown(event)} value={searchDropDownText} className="form-control" aria-label="Default select example">
+                          <option>Select Item</option>
                           {
                               keyVariable.map(elem => (
-                                  <option key={uuid_v4()}>{elem}</option>
+                                  <option key={uuid_v4()} value={elem} >{elem}</option>
                                 
                               ))
                           }
@@ -614,7 +619,8 @@ import {v4 as uuid_v4} from 'uuid';
                                               {
                                                 tableData && Object.keys(tableData).length > 1 ?
                                                 <input type="checkbox" className="messageCheckbox" id="myCheck"
-                                                name="mintData" onChange={checkboxValue} value={checkboxValueRetrive} />
+                                                name="mintData" onClick={checkboxValue} value={checkboxValueRetrive} 
+                                                 />
                                                 : ''
                                               }
                                              </td>
@@ -651,20 +657,17 @@ import {v4 as uuid_v4} from 'uuid';
               </div>
               <div id="test-l-3" className="content">
                 <div className="form-group">
-                <select onChange={(event)=> serielDropdown(event)} className="form-control" aria-label="Default select example">
+                <select onChange={(event)=> serielDropdown(event)} value={searchDropDownText} className="form-control" aria-label="Default select example">
                   <option> Select Item to Recycle </option>
                   {
                       dropDownData && dropDownData.map(elem => (
-                          <option key={uuid_v4()}>{elem}</option>
+                          <option key={uuid_v4()} value={elem} >{elem}</option>
                         
                       ))
                   }
                 </select>
                 <br />
-                <Accordion>
-                  <Accordion.Item eventKey="0">
-                    <Accordion.Header>Burn Product</Accordion.Header>
-                    <Accordion.Body>
+                <div>
                 <Table striped bordered hover variant="light" id="Table2">
                     <thead>
                       <tr>
@@ -701,15 +704,12 @@ import {v4 as uuid_v4} from 'uuid';
                                     }
                       </tbody>
                     </Table>
+                  </div>
                     <br />
                       <div>
                           <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit" onClick={burnAProduct}  >Burn Product</Button>
                           <br />
                       </div>
-                      <br />
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  </Accordion>
                 </div>
               </div>
               <div id="test-l-4" className="content">
@@ -769,7 +769,7 @@ import {v4 as uuid_v4} from 'uuid';
                           minLength: 1,
                           maxLength: 255,
                         })} 
-                        type="text" placeholder="Enter Component ID" />
+                        type="text" placeholder="Enter Product Id" />
                          {errors.componentid?.type === 'required' && "Id is required"}
                          {errors.componentid && errors.componentid.type === "minLength" && <span>Min length should be 1</span> }
                          {errors.componentid && errors.componentid.type === "maxLength" && <span>Max length should be 255</span> }
@@ -791,7 +791,7 @@ import {v4 as uuid_v4} from 'uuid';
                         <Form.Label column sm={2}>
                           Name
                         </Form.Label>
-                        <Form.Control  {...register3('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter the Name" />
+                        <Form.Control  {...register3('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter Name" />
                         {errors.name?.type === 'required' && "name is required"}
                         {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
                         {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
@@ -804,7 +804,7 @@ import {v4 as uuid_v4} from 'uuid';
                           required: true,
                           minLength: 5,
                           maxLength: 16,
-                        })} type="text" placeholder="Enter the Serial No" />
+                        })} type="text" placeholder="Enter Serial Number" />
                           {errors.serielNo?.type === 'required' && "Serial Number is required"}
                          {errors.serielNo && errors.serielNo.type === "minLength" && <span>Min length should be 5</span> }
                          {errors.serielNo && errors.serielNo.type === "maxLength" && <span>Max length should be 16</span> }
@@ -814,14 +814,14 @@ import {v4 as uuid_v4} from 'uuid';
                       <br />
                       <Accordion>
                       <Accordion.Item eventKey="0">
-                        <Accordion.Header>Add as a Child</Accordion.Header>
+                        <Accordion.Header>Add Component to Product</Accordion.Header>
                         <Accordion.Body>
                       <div>
-                        <select onChange={(event)=> serielDropdown1(event)} className="form-control" aria-label="Default select example">
-                          <option>Select Item to add to product</option>
+                        <select onChange={(event)=> serielDropdown1(event)} value={searchDropDownText} className="form-control" aria-label="Default select example">
+                          <option>Select Item</option>
                           {
                               keyVariable1.map(elem => (
-                                  <option key={uuid_v4()}>{elem}</option>
+                                  <option key={uuid_v4()} value={elem} >{elem}</option>
                                 
                               ))
                           }
