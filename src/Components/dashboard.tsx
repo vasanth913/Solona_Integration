@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import Stepper from 'bs-stepper';
-import {  Button, Modal, Form , Table, Accordion, Tabs, Tab} from 'react-bootstrap';
+import {  Button, Modal, Form , Table, Accordion, Figure, Tabs, Tab} from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import {mintComponentsData, mintProductComponentsData, mintComponent, mintProduct, burnProduct, burnComponentData, addAsAChild ,addAsAChild1, mintReproduceProductComponentsData} from '../redux/actions/loginUser';
 import { useDispatch, useSelector} from "react-redux";
 import type { RootState } from '../redux/store';
 import {v4 as uuid_v4} from 'uuid';
-import { isJsxElement } from "typescript";
+import CommercialEntity from '../Components/commercialEntity';
+import NavbarComp from '../Components/navbarComp';
 
  export const Dashboard = () => {
     const [show, setShow] = useState(false);
@@ -20,17 +21,37 @@ import { isJsxElement } from "typescript";
     const [tableData1, setTableData1] = useState([]);
     const [searchDropDownText, setDropDownText] = useState();
     const [dropDownData, setDropDownData] = useState([]);
+    //const [componentValue, setComponentValue] = useState(Math.floor(Math.random() * (255 - 1) + 1));
     const [addChildButton, setAddChildButton] = useState(true);
     const roleChange = useSelector((state: RootState) => state.loginReducer.roleChange);
 
     const [roleStateChange, setRoleChange] = useState('home');
 
     useEffect(() => {
-      if(roleChange === "Manufacturer"){
-        setRoleChange('profile')
-      }
+      
+     if(roleChange !== "Banker") {
+      var stepper = new Stepper(document.querySelector('.bs-stepper'));
+
+      if(roleChange === "Producer"){
+        stepper.to(1)
+      } else if(roleChange === "Manufacturer"){
+          stepper.to(2)
+      } else if(roleChange === "ReCycler"){
+          stepper.to(3)
+      } else if(roleChange === "Refurbisher"){
+          stepper.to(4)
+      } 
+     }
+      
     },[roleChange])
 
+    // useEffect(() => {
+    
+    //   const stepper = new Stepper(document.querySelector('#stepper1'), {
+    //     linear: false,
+    //     animation: true
+    //   })
+    // },[])
     
     const dispatch = useDispatch();
   
@@ -67,6 +88,8 @@ import { isJsxElement } from "typescript";
       dispatch(mintComponent(true));
       dispatch(mintProduct(false));
       dispatch(burnProduct(false));
+      //setComponentValue (Math.floor(Math.random() * (255 - 1) + 1));
+      // data['componentid'] = JSON.stringify(Math.floor(Math.random() * (255 - 1) + 1));
       dispatch(mintComponentsData(data,"mintComponent", mintData));
 
     }; // your form submit function which will invoke after successful validation
@@ -209,14 +232,6 @@ import { isJsxElement } from "typescript";
       setShow(true);
     }
 
-    useEffect(() => {
-    
-      const stepper = new Stepper(document.querySelector('#stepper1'), {
-        linear: false,
-        animation: true
-      })
-    },[])
-
     const getSelected = (data) => {
       dispatch(mintProductComponentsData(data,"mintAProduct"));
     }
@@ -238,8 +253,17 @@ import { isJsxElement } from "typescript";
 
     }; 
 
-
+    
   return (
+    <>
+    <NavbarComp /> 
+     {
+     roleChange === "Banker" ?
+     <>
+      <br />
+      <CommercialEntity />
+     </>
+     :
     <div>
       {/* <Tabs
       id="controlled-tab-example"
@@ -266,7 +290,7 @@ import { isJsxElement } from "typescript";
               </button>
             </div>
             <div className="line"></div>
-            <div className="step" id="step2" data-target="#test-l-2">
+            <div className="step" data-target="#test-l-2">
               <button className="step-trigger"  >
                 <span className="bs-stepper-circle">2</span>
                 <span className="bs-stepper-label">Manufacture Product</span>
@@ -307,6 +331,15 @@ import { isJsxElement } from "typescript";
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
+                          Name
+                        </Form.Label>
+                        <Form.Control  {...register('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter Name" />
+                        {errors.name?.type === 'required' && "name is required"}
+                        {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
+                        {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
                           Description 
                         </Form.Label>
                         <Form.Control {...register("description", {
@@ -317,15 +350,6 @@ import { isJsxElement } from "typescript";
                         {errors.description?.type === 'required' && "Description is required"}
                          {errors.description && errors.description.type === "minLength" && <span>Min length should be 10</span> }
                          {errors.description && errors.description.type === "maxLength" && <span>Max length should be 64</span> }
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
-                        <Form.Label column sm={2}>
-                          Name
-                        </Form.Label>
-                        <Form.Control  {...register('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter Name" />
-                        {errors.name?.type === 'required' && "name is required"}
-                        {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
-                        {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
@@ -410,7 +434,7 @@ import { isJsxElement } from "typescript";
                         <Form.Label column sm={2}>
                           Id
                         </Form.Label>
-                        <Form.Control {...register2("componentid", {
+                        <Form.Control  {...register2("componentid", {
                           required: true,
                           minLength: 1,
                           maxLength: 255,
@@ -419,6 +443,15 @@ import { isJsxElement } from "typescript";
                          {errors.componentid?.type === 'required' && "Id is required"}
                          {errors.componentid && errors.componentid.type === "minLength" && <span>Min length should be 1</span> }
                          {errors.componentid && errors.componentid.type === "maxLength" && <span>Max length should be 255</span> }
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
+                          Name
+                        </Form.Label>
+                        <Form.Control  {...register2('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter Name" />
+                        {errors.name?.type === 'required' && "name is required"}
+                        {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
+                        {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
@@ -435,15 +468,6 @@ import { isJsxElement } from "typescript";
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
-                          Name
-                        </Form.Label>
-                        <Form.Control  {...register2('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter Name" />
-                        {errors.name?.type === 'required' && "name is required"}
-                        {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
-                        {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
-                        <Form.Label column sm={2}>
                           Serial Number
                         </Form.Label>
                         <Form.Control {...register2("serielNo", {
@@ -456,6 +480,7 @@ import { isJsxElement } from "typescript";
                          {errors.serielNo && errors.serielNo.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Button style={{float:'right', paddingTop:'10px'}} className="btn btn-primary" variant="success" type="submit"  >Mint Product</Button>
+                      <br />
                       <br />
                       <br />
                       <Accordion>
@@ -629,7 +654,7 @@ import { isJsxElement } from "typescript";
                         <Form.Label column sm={2}>
                           Id
                         </Form.Label>
-                        <Form.Control {...register3("componentid", {
+                        <Form.Control  {...register3("componentid", {
                           required: true,
                           minLength: 1,
                           maxLength: 255,
@@ -638,6 +663,15 @@ import { isJsxElement } from "typescript";
                          {errors.componentid?.type === 'required' && "Id is required"}
                          {errors.componentid && errors.componentid.type === "minLength" && <span>Min length should be 1</span> }
                          {errors.componentid && errors.componentid.type === "maxLength" && <span>Max length should be 255</span> }
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
+                        <Form.Label column sm={2}>
+                          Name
+                        </Form.Label>
+                        <Form.Control  {...register3('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter Name" />
+                        {errors.name?.type === 'required' && "name is required"}
+                        {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
+                        {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
@@ -651,15 +685,6 @@ import { isJsxElement } from "typescript";
                         {errors.description?.type === 'required' && "Description is required"}
                          {errors.description && errors.description.type === "minLength" && <span>Min length should be 10</span> }
                          {errors.description && errors.description.type === "maxLength" && <span>Max length should be 64</span> }
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="formHorizontalEmail">
-                        <Form.Label column sm={2}>
-                          Name
-                        </Form.Label>
-                        <Form.Control  {...register3('name', { required: true, minLength: 5, maxLength: 16 })}  type="text" placeholder="Enter Name" />
-                        {errors.name?.type === 'required' && "name is required"}
-                        {errors.name && errors.name.type === "minLength" && <span>Min length should be 5</span> }
-                        {errors.name && errors.name.type === "maxLength" && <span>Max length should be 16</span> }
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formHorizontalEmail">
                         <Form.Label column sm={2}>
@@ -740,7 +765,8 @@ import { isJsxElement } from "typescript";
           </div>
         </div>
       </div>
-
+      }
+    </>
   );
 };
 

@@ -27,6 +27,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "fs": "^0.0.1-security",
+    "mdbreact": "^5.1.0",
     "mz": "^2.7.0",
     "prettier": "^2.4.1",
     "react": "^17.0.2",

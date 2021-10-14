@@ -1,14 +1,13 @@
 import React, {useState} from 'react';
 import { useDispatch, useSelector} from "react-redux";
-import { Button } from 'react-bootstrap';
+import { Button, Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useHistory } from "react-router-dom";
 import {loginUser, roleChange} from '../redux/actions/loginUser';
+import { Form } from 'react-bootstrap';
+import NavbarComp from '../Components/navbarComp';
 
-const Login = () => {
-
-    const [establishConnection, setEstablishConnection] = useState(false);
-    
+const Login = () => {   
 
     const [userNameVal, setUserName] = useState("");
 
@@ -30,7 +29,7 @@ const Login = () => {
     const roleDropdown = (event) => {
         setRole(event.target.value);
         dispatch(roleChange(event.target.value));
-        history.push("/dashboard");
+        //history.push("/dashboard");
     }
 
     return(
@@ -49,7 +48,17 @@ const Login = () => {
                         <label>Password</label>
                         <input type="password" className="form-control" placeholder="Enter Password" />
                     </div>
-
+                    <br />
+                    <div>
+                        <Form.Select  onChange={(event)=> roleDropdown(event)} value={role} aria-label="Default select example">
+                            <option value="Select Role">Select Role</option>
+                            <option value="Banker">Banker</option>
+                            <option value="Producer">Producer</option>
+                            <option value="Manufacturer">Manufacturer</option>
+                            <option value="ReCycler">ReCycler</option>
+                            <option value="Refurbisher">Refurbisher</option>
+                        </Form.Select>
+                    </div>
                 <div className="form-group" style={{marginTop: '10px'}}>
                     <Button variant="primary" onClick={login}>Login</Button>
                 </div>
@@ -62,6 +71,7 @@ const Login = () => {
                   <option value="Manufacturer">Manufacturer</option>
                </select>
            </div> */}
+           
             </div>
         </div>
         </>

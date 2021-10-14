@@ -222,7 +222,18 @@ checkProgram();
     }
   
     // Derive the address (public key) of a greeting account from the program so that it's easy to find later.
-    const COMPONENT_SEED_NVD = mintDataValue && mintDataValue.componentid;
+    let COMPONENT_SEED_NVD = mintDataValue && mintDataValue.componentid;
+
+  if(mintProductProductDataValues && mintProductProductDataValues[1] === "mintAReproduceProduct"){
+    COMPONENT_SEED_NVD = mintProductProductDataValues[0] && mintProductProductDataValues[0].componentid;
+  } else if(addAsAChildReproduceValue && addAsAChildReproduceValue[0] === "addAsAChildReProduce"){
+    COMPONENT_SEED_NVD = addAsAChildReproduceValue[1];
+  }  else if(burnComponentData && burnComponentData[0] === "BurnAProduct"){
+    COMPONENT_SEED_NVD = burnComponentData[1];
+  } else if (addAsAChildValue && addAsAChildValue[0] === "addAsAChild" ){
+    COMPONENT_SEED_NVD = addAsAChildValue[1];
+  } 
+    //const COMPONENT_SEED_NVD = mintDataValue && mintDataValue.componentid;
     nvd = await PublicKey.createWithSeed(
       payerUrl.publicKey,
       COMPONENT_SEED_NVD,
@@ -262,7 +273,11 @@ checkProgram();
   
     console.log("Component Qcom PDA: ", qcom.toBase58());
     console.log("Component Nvd PDA: ", nvd.toBase58());
-    createComponentQcom();
+    if(burnComponentData && burnComponentData[0] === "BurnAProduct"){
+      burnQcom();
+    } else {
+      createComponentQcom();
+    }
   }
 
   
@@ -645,12 +660,12 @@ async function reportComponentNvd(): Promise<void> {
   },[connectionUrl,payerUrl]);
 
   return (
-    <div className="App">
+    <>
         {/* {
            qCOM && nVD && programIdVal && programIdVal !== undefined &&
             <CreateComponentQcom connectionUrl={connectionUrl} payerUrl={payerUrl} qCOM={qCOM} programIdVal={programIdVal} />   
         } */}
-    </div>
+    </>
   );
 
 }

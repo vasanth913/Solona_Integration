@@ -26,7 +26,8 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .auth-wrapper {
-  background-image: url("../src/Components/images/bg1.jpg");
+  background-image: url("../src/Components/images/loginBackground1.jpg");
+  background-position: center;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -70,4 +71,7 @@ body, html, .App, #root, .auth-wrapper {
 
 .forgot-password a {
   color: #167bff;
+}
+.navbar-expand-lg .navbar-nav .dropdown-menu{
+  margin-left: -66px;
 }

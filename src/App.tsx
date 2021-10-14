@@ -8,13 +8,11 @@ import {
 import './App.css';
 import Dashboard from './Components/dashboard';
 import Login from './Components/login';
-import NavbarComp from './Components/navbarComp';
 
 function App() {
 
   return (
     <>
-    <NavbarComp />
       <Router>
       <Switch>
         <Route exact path="/">
