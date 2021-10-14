@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Form , Figure } from 'react-bootstrap';
-import CircleBlock from '../Components/images/CircleBlock.png';
+import Producer_score from '../Components/images/Producer.jpg';
+import Manufacturer_score from '../Components/images/Manufacturer.jpg';
+import Recycler_score from '../Components/images/ReCycler.jpg';
+import Refurbisher_score from '../Components/images/Refurbisher.jpg';
+
 
 const CommercialEntity = () => {
 
@@ -19,17 +23,15 @@ const CommercialEntity = () => {
               <option value="BlueForest Phones Pte. Ltd.">BlueForest Phones Pte. Ltd.</option>
               <option value="VKB Recyclers co.">VKB Recyclers co.</option>
               <option value="SecondLife Goods Pte. Ltd.">SecondLife Goods Pte. Ltd.</option>
-              <option value="Indigo Commercial Bank">Refurbisher</option>
           </Form.Select>
       </div>
+      <br />
       {
         GenerateGreenImage === "RedStone Electronics Pte. Ltd." ?
         <Figure>
         <Figure.Image
-          width={171}
-          height={180}
-          alt="171x180"
-          src={CircleBlock}
+          alt="Producer_score"
+          src={Producer_score}
         />
       </Figure>
       : ''
@@ -38,10 +40,8 @@ const CommercialEntity = () => {
         GenerateGreenImage === "BlueForest Phones Pte. Ltd." ?
         <Figure>
         <Figure.Image
-          width={171}
-          height={180}
-          alt="171x180"
-          src={CircleBlock}
+          alt="Manufacturer_score"
+          src={Manufacturer_score}
         />
       </Figure>
       : ''
@@ -50,10 +50,8 @@ const CommercialEntity = () => {
         GenerateGreenImage === "VKB Recyclers co." ?
         <Figure>
         <Figure.Image
-          width={171}
-          height={180}
-          alt="171x180"
-          src={CircleBlock}
+          alt="Recycler_score"
+          src={Recycler_score}
         />
       </Figure>
       : ''
@@ -62,10 +60,8 @@ const CommercialEntity = () => {
         GenerateGreenImage === "SecondLife Goods Pte. Ltd." ?
         <Figure>
         <Figure.Image
-          width={171}
-          height={180}
-          alt="171x180"
-          src={CircleBlock}
+          alt="Refurbisher_score"
+          src={Refurbisher_score}
         />
       </Figure>
       : ''

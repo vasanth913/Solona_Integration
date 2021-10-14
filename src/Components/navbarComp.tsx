@@ -78,7 +78,8 @@ const NavbarComp = () => {
                                 if(roleChange === elem.role) {
                                     return (
                                     <>
-                                        <NavDropdown.Item key={uuid_v4()} ><span> <PersonCircle /></span> <span>Welcome {elem.role} </span></NavDropdown.Item>
+                                        <NavDropdown.Item key={uuid_v4()} ><span> <PersonCircle /> </span> <span>Welcome {userName} </span></NavDropdown.Item>
+                                        <NavDropdown.Item>{elem.role} </NavDropdown.Item>
                                         <NavDropdown.Item>{elem.CompanyName} </NavDropdown.Item>
                                      </>
                                     )
