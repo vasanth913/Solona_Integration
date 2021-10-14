@@ -24,7 +24,6 @@ export const mintComponentsData = (mintData, mintComponent, mintDataValues) =>
 
 export const mintProductComponentsData = (mintProductData, mintAProduct) => 
     async (dispatch) => {
-      console.log('mintAProduct2 ****');
       let showData = {};
       let formData = [];
       showData.id = mintProductData.componentid; 
@@ -36,6 +35,23 @@ export const mintProductComponentsData = (mintProductData, mintAProduct) =>
       localStorage.setItem(mintProductData.componentid, JSON.stringify(formData[0]));
       dispatch({type: actionTypes.MINT_PRODUCTS_DATA, payload: [mintProductData, mintAProduct]})
 }
+
+export const mintReproduceProductComponentsData = (mintProductData, mintAProduct) => 
+    async (dispatch) => {
+      let showData = {};
+      let formData = [];
+      showData.id = mintProductData.componentid; 
+      showData.description = mintProductData.description;
+      showData.name = mintProductData.name;
+      showData.serielNo = mintProductData.serielNo;
+      showData.parent = 0 ;
+      formData.push(showData);
+      localStorage.setItem(mintProductData.componentid, JSON.stringify(formData[0]));
+      dispatch({type: actionTypes.MINT_PRODUCTS_PRODUCE_DATA, payload: [mintProductData, mintAProduct]})
+}
+
+
+
 
 export const burnComponentData = (burnAProduct, selectedBurnComponentId) => 
     async (dispatch) => {
@@ -69,6 +85,11 @@ export const mintResponse = (mintResponseData) =>
 export const addAsAChild = (addAsAChild, selectedChildProduct) => 
     async (dispatch) => {
       dispatch({type: actionTypes.ADD_AS_A_CHILD, payload: [addAsAChild, selectedChildProduct]})
+}
+
+export const addAsAChild1 = (addAsAChild1, selectedChildProduct1) => 
+    async (dispatch) => {
+      dispatch({type: actionTypes.ADD_AS_A_CHILD1, payload: [addAsAChild1, selectedChildProduct1]})
 }
 
 export const enableAddAsaChildButton = (flag) => 

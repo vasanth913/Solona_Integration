@@ -10,7 +10,9 @@ const inititalState = {
     burnProductFlag: false,
     addAsAChildValue:[],
     addAsAChildButton: false,
-    burnResponseData:[]
+    burnResponseData:[],
+    addAsAChildReproduceValue: [],
+    mintProductProductDataValues: []
 }
 
 export const mintReducer = (state = inititalState, {type, payload}) => {
@@ -61,6 +63,16 @@ export const mintReducer = (state = inititalState, {type, payload}) => {
             return {
                 ...state, 
                 addAsAChildValue : payload
+            };
+        case actionTypes.ADD_AS_A_CHILD1:
+            return {
+                ...state, 
+                addAsAChildReproduceValue : payload
+            };
+        case actionTypes.MINT_PRODUCTS_PRODUCE_DATA:
+            return {
+                ...state, 
+                mintProductProductDataValues : payload
             };
         case actionTypes.ADD_AS_A_CHILD_BUTTON:
             return {

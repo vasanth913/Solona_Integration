@@ -19,8 +19,12 @@ const NavbarComp = () => {
     const burnComponentData = useSelector((state: RootState) => state.mintReducer.burnComponentData);
 
     const addAsAChildValue = useSelector((state: RootState) => state.mintReducer.addAsAChildValue);
+
+    const addAsAChildReproduceValue = useSelector((state: RootState) => state.mintReducer.addAsAChildReproduceValue);
+
+    const mintProductProductDataValues = useSelector((state: RootState) => state.mintReducer.mintProductProductDataValues);
     
-    console.log('mintAProduct4 ****', addAsAChildValue);
+    console.log('addAsAChildReproduceValue ****', addAsAChildReproduceValue);
 
 
     return(
@@ -60,6 +64,16 @@ const NavbarComp = () => {
                       burnComponentData && burnComponentData.length > 0 ?
                         <EstablishConnection   mintData={burnComponentData[1]} />
                         : ''
+                    }
+                    {
+                      addAsAChildReproduceValue && addAsAChildReproduceValue.length > 0 ?
+                        <EstablishConnection   mintData={addAsAChildReproduceValue[1]} />
+                        : ''
+                    }
+                    {
+                    mintProductProductDataValues && mintProductProductDataValues.length > 0 ?
+                    <EstablishConnection   mintData={mintProductProductDataValues[0]} />
+                    : ''
                     }
                 </Navbar.Text>
             }

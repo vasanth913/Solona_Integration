@@ -34,12 +34,14 @@ const CheckProgram = ({connectionUrl, payerUrl}) => {
   
   const burnComponentData = useSelector((state: RootState) => state.mintReducer.burnComponentData);
 
-  const mintProductFlag = useSelector((state: RootState) => state.mintReducer.mintProductFlag);
+  const addAsAChildReproduceValue = useSelector((state: RootState) => state.mintReducer.addAsAChildReproduceValue);
+  
+  const mintProductProductDataValues = useSelector((state: RootState) => state.mintReducer.mintProductProductDataValues);
 
-  const burnProductFlag = useSelector((state: RootState) => state.mintReducer.burnProductFlag);
 
-
-  if(mintProductData && mintProductData[1] === 'mintAProduct'){
+  if(mintProductProductDataValues && mintProductProductDataValues[1] === 'mintAReproduceProduct'){
+    mintDataValue = mintProductProductDataValues && mintProductProductDataValues[0];
+  } else if(mintProductData && mintProductData[1] === 'mintAProduct'){
     mintDataValue = mintProductData && mintProductData[0];
   } else {
     mintDataValue = mintData && mintData[0];
@@ -175,7 +177,11 @@ checkProgram();
   
     let COMPONENT_SEED_QCOM = mintDataValue && mintDataValue.componentid;
 
-  if(burnComponentData && burnComponentData[0] === "BurnAProduct"){
+  if(mintProductProductDataValues && mintProductProductDataValues[1] === "mintAReproduceProduct"){
+      COMPONENT_SEED_QCOM = mintProductProductDataValues[0] && mintProductProductDataValues[0].componentid;
+  } else if(addAsAChildReproduceValue && addAsAChildReproduceValue[0] === "addAsAChildReProduce"){
+    COMPONENT_SEED_QCOM = addAsAChildReproduceValue[1];
+  }  else if(burnComponentData && burnComponentData[0] === "BurnAProduct"){
     COMPONENT_SEED_QCOM = burnComponentData[1];
   } else if (addAsAChildValue && addAsAChildValue[0] === "addAsAChild" ){
     COMPONENT_SEED_QCOM = addAsAChildValue[1];
@@ -303,13 +309,17 @@ checkProgram();
                 [payerUrl],
               );
               console.log("Transaction receipt: ", tx);
-             if(addAsAChildValue && addAsAChildValue[0] === "addAsAChild"){
+            if(addAsAChildReproduceValue && addAsAChildReproduceValue[0] === "addAsAChildReProduce"){
                 addAsChild();
-             }
-             if(burnComponentData && burnComponentData[0] === "BurnAProduct"){
+             } else if(addAsAChildValue && addAsAChildValue[0] === "addAsAChild" &&
+             addAsAChildReproduceValue && addAsAChildReproduceValue[0] !== "addAsAChildReProduce" && 
+             mintProductProductDataValues && mintProductProductDataValues[1] !== "mintAReproduceProduct"){
+                addAsChild();
+             } else if(burnComponentData && burnComponentData[0] === "BurnAProduct" 
+             && mintProductProductDataValues && mintProductProductDataValues[1] !== "mintAReproduceProduct" &&
+             addAsAChildReproduceValue && addAsAChildReproduceValue[0] !== "addAsAChildReProduce"){
                 burnQcom();
-             }
-             if(mintProductData && mintProductData[1] === 'mintAProduct'){
+             } else if(mintProductData && mintProductData[1] === 'mintAProduct'){
                 dispatch(enableAddAsaChildButton(true));
              }
               // if(mintProductData && mintProductData[1] === 'mintAProduct'){
@@ -541,7 +551,9 @@ async function reportComponentNvd(): Promise<void> {
     new Transaction().add(instruction),
     [payerUrl],
   );
-  var data = Object.values(Object.entries(localStorage).filter(([key]) => key.includes(addAsAChildValue[1])));
+  console.log('*** ddAsAChildReproduceValue[1]', addAsAChildReproduceValue[1]);
+  var data = Object.values(Object.entries(localStorage).filter(([key]) => key.includes(addAsAChildReproduceValue[1] ? addAsAChildReproduceValue[1] : addAsAChildValue[1])));
+  console.log('*** data', data);
   data && data.length > 0 && data.map(elem => {
     let val1 = JSON.parse(elem[1]);
     console.log('***', val1);
@@ -555,12 +567,14 @@ async function reportComponentNvd(): Promise<void> {
    // @ts-expect-error: Let's ignore a compile error like this unreachable code 
       obj.serielNo = val1.serielNo;
    // @ts-expect-error: Let's ignore a compile error like this unreachable code 
-      obj.parent = mintProductData[0].componentid ;
+      obj.parent = mintProductProductDataValues[0] ? mintProductProductDataValues[0].componentid : mintProductData[0].componentid ;
   localStorage.setItem(val1.id, JSON.stringify(obj));
   })
   
   console.log("Transaction receipt: ", tx);
-  burnQcom();
+  if(mintProductProductDataValues && mintProductProductDataValues[1] !== "mintAReproduceProduct"){
+    burnQcom();
+  }
 }
 
 // Burn Nvd
